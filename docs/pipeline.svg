@@ -103,12 +103,13 @@
   <path class="arrow" d="M930,184 L930,238"/>
 
   <!-- output -->
-  <rect rx="8" class="file" x="640" y="380" width="178" height="60"/>
-  <text class="mod" x="656" y="404">form.xml (+ itemsets.csv)</text>
-  <text class="small" x="656" y="422">ODK XForm (Collect,</text>
-  <text class="small" x="656" y="436">Enketo, KoboToolbox)</text>
-  <path class="arrow" d="M880,330 C880,410 872,410 822,410"/>
-  <text class="lbl" x="888" y="382">to_document()</text>
+  <rect rx="8" class="file" x="640" y="380" width="190" height="76"/>
+  <text class="mod" x="656" y="404">form.xml</text>
+  <text class="small" x="656" y="421">+ itemsets.csv when needed</text>
+  <text class="small" x="656" y="436">ODK XForm (Collect,</text>
+  <text class="small" x="656" y="451">Enketo, KoboToolbox)</text>
+  <path class="arrow" d="M884,330 C884,414 876,414 834,414"/>
+  <text class="lbl" x="892" y="384">to_document()</text>
 
   <!-- error path -->
   <rect rx="8" class="errbox" x="20" y="240" width="360" height="88"/>

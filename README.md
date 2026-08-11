@@ -38,7 +38,7 @@ Input formats: `.xlsx`, `.xls`, `.ods`
 
 ## How it works
 
-![rxform pipeline](https://raw.githubusercontent.com/milkway/rxform/main/docs/pipeline.svg?v=2)
+![rxform pipeline](https://raw.githubusercontent.com/milkway/rxform/main/docs/pipeline.svg?v=3)
 
 The workbook is read and normalized (`xls.rs`), parsed into a tree of
 questions, groups and choice lists (`parser.rs` + `model.rs`), validated with
