@@ -1,7 +1,7 @@
 # rxform
 
 [![crates.io](https://img.shields.io/crates/v/rxform.svg)](https://crates.io/crates/rxform)
-[![docs.rs](https://docs.rs/rxform/badge.svg)](https://docs.rs/rxform)
+[![docs.rs](https://img.shields.io/docsrs/rxform)](https://docs.rs/rxform)
 [![license: BSD-2-Clause](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21894015.svg)](https://doi.org/10.5281/zenodo.21894015)
 
