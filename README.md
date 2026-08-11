@@ -3,6 +3,7 @@
 [![crates.io](https://img.shields.io/crates/v/rxform.svg)](https://crates.io/crates/rxform)
 [![docs.rs](https://docs.rs/rxform/badge.svg)](https://docs.rs/rxform)
 [![license: BSD-2-Clause](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21894015.svg)](https://doi.org/10.5281/zenodo.21894015)
 
 A Rust implementation of [pyxform](https://github.com/xlsform/pyxform): converts
 [XLSForm](https://xlsform.org) spreadsheets into ODK
@@ -202,5 +203,6 @@ pyxform, and pull requests — are welcome at
 [github.com/milkway/rxform](https://github.com/milkway/rxform).
 
 To cite rxform in academic work, use the metadata in
-[CITATION.cff](CITATION.cff) (a citable archive of each release is published
-via Zenodo).
+[CITATION.cff](CITATION.cff) or the Zenodo archive:
+[doi:10.5281/zenodo.21894015](https://doi.org/10.5281/zenodo.21894015)
+(concept DOI — always resolves to the latest release).

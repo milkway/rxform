@@ -6,6 +6,7 @@ authors:
   - family-names: "Leite"
     given-names: "André"
     email: "leite@de.ufpe.br"
+doi: "10.5281/zenodo.21894015"
 repository-code: "https://github.com/milkway/rxform"
 url: "https://github.com/milkway/rxform"
 license: BSD-2-Clause
