@@ -38,7 +38,7 @@ Input formats: `.xlsx`, `.xls`, `.ods`
 
 ## How it works
 
-![rxform pipeline](https://raw.githubusercontent.com/milkway/rxform/main/docs/pipeline.svg)
+![rxform pipeline](https://raw.githubusercontent.com/milkway/rxform/main/docs/pipeline.svg?v=2)
 
 The workbook is read and normalized (`xls.rs`), parsed into a tree of
 questions, groups and choice lists (`parser.rs` + `model.rs`), validated with
@@ -49,7 +49,7 @@ conventions, so existing ODK tooling sees familiar XML.
 The second diagram shows where each piece of the spreadsheet ends up in the
 generated document:
 
-![XLSForm to XForm mapping](https://raw.githubusercontent.com/milkway/rxform/main/docs/mapping.svg)
+![XLSForm to XForm mapping](https://raw.githubusercontent.com/milkway/rxform/main/docs/mapping.svg?v=2)
 
 ## Error reporting
 
