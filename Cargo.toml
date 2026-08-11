@@ -1,0 +1,27 @@
+[package]
+name = "rxform"
+version = "0.1.0"
+edition = "2021"
+description = "Rust implementation of pyxform: convert XLSForm spreadsheets to ODK XForm XML"
+license = "BSD-2-Clause"
+readme = "README.md"
+authors = ["André Leite <leite@de.ufpe.br>"]
+repository = "https://github.com/milkway/rxform"
+keywords = ["xlsform", "xform", "odk", "openrosa", "survey"]
+categories = ["command-line-utilities", "parser-implementations"]
+
+[lib]
+name = "rxform"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rxform"
+path = "src/main.rs"
+
+[dependencies]
+calamine = { version = "0.26", features = ["dates"] }
+chrono = "0.4.45"
+clap = { version = "4", features = ["derive"] }
+
+[dev-dependencies]
+pretty_assertions = "1"

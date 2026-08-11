@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>loop</h:title>
+    <model odk:xforms-version="1.0.0">
+      <itext>
+        <translation lang="english">
+          <text id="toilet_type-0">
+            <value>Pit latrine with slab</value>
+          </text>
+          <text id="toilet_type-1">
+            <value>Pit latrine without slab/open pit</value>
+          </text>
+          <text id="toilet_type-2">
+            <value>Bucket system</value>
+          </text>
+          <text id="toilet_type-3">
+            <value>Other</value>
+          </text>
+          <text id="/data/available_toilet_types:label">
+            <value>What type of toilets are on the premises?</value>
+          </text>
+          <text id="/data/loop_toilet_types/pit_latrine_with_slab:label">
+            <value>Pit latrine with slab</value>
+          </text>
+          <text id="/data/loop_toilet_types/pit_latrine_with_slab/number:label">
+            <value>How many Pit latrine with slab are on the premises?</value>
+          </text>
+          <text id="/data/loop_toilet_types/open_pit_latrine:label">
+            <value>Pit latrine without slab/open pit</value>
+          </text>
+          <text id="/data/loop_toilet_types/open_pit_latrine/number:label">
+            <value>How many Pit latrine without slab/open pit are on the premises?</value>
+          </text>
+          <text id="/data/loop_toilet_types/bucket_system:label">
+            <value>Bucket system</value>
+          </text>
+          <text id="/data/loop_toilet_types/bucket_system/number:label">
+            <value>How many Bucket system are on the premises?</value>
+          </text>
+          <text id="/data/loop_toilet_types/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/data/loop_toilet_types/other/number:label">
+            <value>How many Other are on the premises?</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <data id="loop">
+          <available_toilet_types/>
+          <available_toilet_types_other/>
+          <loop_toilet_types>
+            <pit_latrine_with_slab>
+              <number/>
+            </pit_latrine_with_slab>
+            <open_pit_latrine>
+              <number/>
+            </open_pit_latrine>
+            <bucket_system>
+              <number/>
+            </bucket_system>
+            <other>
+              <number/>
+            </other>
+          </loop_toilet_types>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="toilet_type">
+        <root>
+          <item>
+            <itextId>toilet_type-0</itextId>
+            <name>pit_latrine_with_slab</name>
+          </item>
+          <item>
+            <itextId>toilet_type-1</itextId>
+            <name>open_pit_latrine</name>
+          </item>
+          <item>
+            <itextId>toilet_type-2</itextId>
+            <name>bucket_system</name>
+          </item>
+          <item>
+            <itextId>toilet_type-3</itextId>
+            <name>other</name>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/available_toilet_types" type="string"/>
+      <bind nodeset="/data/available_toilet_types_other" relevant="selected(../available_toilet_types, 'other')" type="string"/>
+      <bind nodeset="/data/loop_toilet_types/pit_latrine_with_slab/number" type="int"/>
+      <bind nodeset="/data/loop_toilet_types/open_pit_latrine/number" type="int"/>
+      <bind nodeset="/data/loop_toilet_types/bucket_system/number" type="int"/>
+      <bind nodeset="/data/loop_toilet_types/other/number" type="int"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select ref="/data/available_toilet_types">
+      <label ref="jr:itext('/data/available_toilet_types:label')"/>
+      <itemset nodeset="instance('toilet_type')/root/item">
+        <value ref="name"/>
+        <label ref="jr:itext(itextId)"/>
+      </itemset>
+    </select>
+    <input ref="/data/available_toilet_types_other">
+      <label>Specify other.</label>
+    </input>
+    <group ref="/data/loop_toilet_types">
+      <group ref="/data/loop_toilet_types/pit_latrine_with_slab">
+        <label ref="jr:itext('/data/loop_toilet_types/pit_latrine_with_slab:label')"/>
+        <input ref="/data/loop_toilet_types/pit_latrine_with_slab/number">
+          <label ref="jr:itext('/data/loop_toilet_types/pit_latrine_with_slab/number:label')"/>
+        </input>
+      </group>
+      <group ref="/data/loop_toilet_types/open_pit_latrine">
+        <label ref="jr:itext('/data/loop_toilet_types/open_pit_latrine:label')"/>
+        <input ref="/data/loop_toilet_types/open_pit_latrine/number">
+          <label ref="jr:itext('/data/loop_toilet_types/open_pit_latrine/number:label')"/>
+        </input>
+      </group>
+      <group ref="/data/loop_toilet_types/bucket_system">
+        <label ref="jr:itext('/data/loop_toilet_types/bucket_system:label')"/>
+        <input ref="/data/loop_toilet_types/bucket_system/number">
+          <label ref="jr:itext('/data/loop_toilet_types/bucket_system/number:label')"/>
+        </input>
+      </group>
+      <group ref="/data/loop_toilet_types/other">
+        <label ref="jr:itext('/data/loop_toilet_types/other:label')"/>
+        <input ref="/data/loop_toilet_types/other/number">
+          <label ref="jr:itext('/data/loop_toilet_types/other/number:label')"/>
+        </input>
+      </group>
+    </group>
+  </h:body>
+</h:html>

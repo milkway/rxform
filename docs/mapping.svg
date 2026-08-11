@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 740" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .survey { fill: #f0f6ff; stroke: #3b6ea5; stroke-width: 1.5; }
+    .choices { fill: #f2fbf4; stroke: #2f8f4e; stroke-width: 1.5; }
+    .settings { fill: #fff8ec; stroke: #b07d2b; stroke-width: 1.5; }
+    .entities { fill: #f7f2fd; stroke: #8250df; stroke-width: 1.5; }
+    .doc { fill: #f7f8fa; stroke: #5b6b80; stroke-width: 1.5; }
+    .title { font-size: 15px; font-weight: 600; fill: #17263a; }
+    .mod { font-size: 13px; font-weight: 600; fill: #17263a; }
+    .mono { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; fill: #17263a; }
+    .monosmall { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; fill: #45566e; }
+    .asurvey { font-size: 11.5px; fill: #3b6ea5; font-weight: 600; }
+    .achoices { font-size: 11.5px; fill: #2f8f4e; font-weight: 600; }
+    .asettings { font-size: 11.5px; fill: #b07d2b; font-weight: 600; }
+    .aentities { font-size: 11.5px; fill: #8250df; font-weight: 600; }
+    .agen { font-size: 11.5px; fill: #8250df; font-weight: 600; }
+    .arrow-s { stroke: #3b6ea5; stroke-width: 1.4; fill: none; marker-end: url(#hs); opacity: 0.85; }
+    .arrow-c { stroke: #2f8f4e; stroke-width: 1.4; fill: none; marker-end: url(#hc); opacity: 0.85; }
+    .arrow-g { stroke: #b07d2b; stroke-width: 1.4; fill: none; marker-end: url(#hg); opacity: 0.85; }
+    .arrow-e { stroke: #8250df; stroke-width: 1.4; fill: none; marker-end: url(#he); opacity: 0.85; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0e1420; }
+      .survey { fill: #16233a; stroke: #6ea3dd; }
+      .choices { fill: #12291b; stroke: #58b877; }
+      .settings { fill: #2b2312; stroke: #d3a04c; }
+      .entities { fill: #221a33; stroke: #b394f0; }
+      .doc { fill: #131a26; stroke: #8fa1b8; }
+      .title, .mod, .mono { fill: #e8eef7; }
+      .monosmall { fill: #a7b4c6; }
+      .asurvey { fill: #82b3e8; }
+      .achoices { fill: #6ec78a; }
+      .asettings { fill: #dcae63; }
+      .aentities { fill: #b394f0; }
+      .agen { fill: #b394f0; }
+      .arrow-s { stroke: #82b3e8; }
+      .arrow-c { stroke: #6ec78a; }
+      .arrow-g { stroke: #dcae63; }
+      .arrow-e { stroke: #b394f0; }
+    }
+  </style>
+  <defs>
+    <marker id="hs" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#3b6ea5"/></marker>
+    <marker id="hc" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#2f8f4e"/></marker>
+    <marker id="hg" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#b07d2b"/></marker>
+    <marker id="he" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#8250df"/></marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1060" height="740"/>
+  <text class="title" x="20" y="34">How the XLSForm sheets map into the XForm document</text>
+
+  <!-- survey sheet -->
+  <rect rx="8" class="survey" x="20" y="70" width="240" height="236"/>
+  <text class="mod" x="36" y="96">survey sheet</text>
+  <text class="monosmall" x="36" y="118">type · name · label::lang</text>
+  <text class="monosmall" x="36" y="134">hint · guidance_hint · media</text>
+  <text class="monosmall" x="36" y="150">relevant · constraint(_message)</text>
+  <text class="monosmall" x="36" y="166">required(_message) · read_only</text>
+  <text class="monosmall" x="36" y="182">calculation · default · trigger</text>
+  <text class="monosmall" x="36" y="198">appearance · parameters</text>
+  <text class="monosmall" x="36" y="214">choice_filter · repeat_count</text>
+  <text class="monosmall" x="36" y="230">begin/end group · repeat · loop</text>
+  <text class="monosmall" x="36" y="246">select_one/_multiple LIST</text>
+  <text class="monosmall" x="36" y="262">..._from_file · *-external</text>
+  <text class="monosmall" x="36" y="278">save_to · compact_tag</text>
+  <text class="monosmall" x="36" y="294">bind:: · body:: · instance::</text>
+
+  <!-- choices sheet -->
+  <rect rx="8" class="choices" x="20" y="326" width="240" height="110"/>
+  <text class="mod" x="36" y="352">choices sheet</text>
+  <text class="monosmall" x="36" y="374">list_name · name · label::lang</text>
+  <text class="monosmall" x="36" y="390">image/audio/video</text>
+  <text class="monosmall" x="36" y="406">extra columns (filters)</text>
+
+  <!-- settings sheet -->
+  <rect rx="8" class="settings" x="20" y="456" width="240" height="142"/>
+  <text class="mod" x="36" y="482">settings sheet</text>
+  <text class="monosmall" x="36" y="504">form_title · form_id · version</text>
+  <text class="monosmall" x="36" y="520">default_language · style · flat</text>
+  <text class="monosmall" x="36" y="536">instance_name · submission_url</text>
+  <text class="monosmall" x="36" y="552">public_key · namespaces</text>
+  <text class="monosmall" x="36" y="568">prefix · delimiter · attribute::</text>
+  <text class="monosmall" x="36" y="584">clean_text_values · omit_instanceID</text>
+
+  <!-- entities sheet -->
+  <rect rx="8" class="entities" x="20" y="618" width="240" height="94"/>
+  <text class="mod" x="36" y="644">entities sheet</text>
+  <text class="monosmall" x="36" y="666">list_name · entity_id · label</text>
+  <text class="monosmall" x="36" y="682">create_if · update_if</text>
+  <text class="monosmall" x="36" y="698">(+ external_choices sheet)</text>
+
+  <!-- XForm document -->
+  <rect rx="8" class="doc" x="360" y="70" width="680" height="580"/>
+  <text class="mod" x="376" y="96">form.xml — ODK XForm</text>
+
+  <text class="mono" x="376" y="124">&lt;h:html&gt;</text>
+  <text class="mono" x="392" y="142">&lt;h:head&gt;</text>
+  <text class="mono" x="408" y="160">&lt;h:title&gt;</text>
+  <text class="asettings" x="640" y="160">← form_title</text>
+  <text class="mono" x="408" y="178">&lt;model entities:entities-version&gt;</text>
+  <text class="aentities" x="680" y="178">← entities sheet present</text>
+  <text class="mono" x="424" y="196">&lt;itext&gt; translations</text>
+  <text class="asurvey" x="640" y="196">← label::lang · hint::lang · media</text>
+  <text class="achoices" x="880" y="196">← choice labels</text>
+  <text class="mono" x="424" y="214">&lt;instance&gt; primary &lt;data id version&gt;</text>
+  <text class="asettings" x="740" y="214">← form_id · version · prefix</text>
+  <text class="mono" x="440" y="232">&lt;q1/&gt; &lt;group&gt;&lt;q2/&gt;… (flat: hoisted)</text>
+  <text class="asurvey" x="770" y="232">← name column · static defaults</text>
+  <text class="mono" x="440" y="250">&lt;meta&gt; &lt;instanceID/&gt; &lt;audit/&gt;</text>
+  <text class="mono" x="440" y="268">&lt;entity dataset create update id&gt;</text>
+  <text class="aentities" x="720" y="268">← entities: meta/entity block</text>
+  <text class="mono" x="424" y="286">&lt;instance id="list"&gt; item name/label</text>
+  <text class="achoices" x="700" y="286">← choices sheet, one per list_name</text>
+  <text class="mono" x="424" y="304">&lt;instance id="x" src="jr://file-csv/x.csv"/&gt;</text>
+  <text class="asurvey" x="750" y="304">← pulldata() · *_from_file · *-external</text>
+  <text class="mono" x="424" y="322">&lt;instance id="__last-saved"/&gt;</text>
+  <text class="asurvey" x="660" y="322">← ${last-saved#q} references</text>
+  <text class="mono" x="424" y="340">&lt;bind nodeset type relevant constraint</text>
+  <text class="mono" x="440" y="358">required calculate entities:saveto/&gt;</text>
+  <text class="asurvey" x="740" y="349">← bind columns · save_to, ${ref} expanded</text>
+  <text class="mono" x="424" y="376">&lt;bind nodeset="…/entity/@id …"/&gt;</text>
+  <text class="aentities" x="680" y="376">← entity_id · create_if · update_if</text>
+  <text class="mono" x="424" y="394">&lt;setvalue event="odk-instance-first-load"/&gt;</text>
+  <text class="asurvey" x="760" y="394">← dynamic defaults</text>
+  <text class="mono" x="424" y="412">&lt;odk:setgeopoint/&gt; &lt;odk:recordaudio/&gt;</text>
+  <text class="asurvey" x="740" y="412">← start-geopoint · background-audio</text>
+
+  <text class="mono" x="392" y="438">&lt;h:body&gt;</text>
+  <text class="asettings" x="470" y="438">← style (class attribute)</text>
+  <text class="mono" x="408" y="456">&lt;input&gt; &lt;select1&gt; &lt;select&gt; &lt;upload&gt; &lt;trigger&gt; &lt;range&gt;</text>
+  <text class="asurvey" x="820" y="456">← type · appearance</text>
+  <text class="mono" x="424" y="474">&lt;label&gt; &lt;hint&gt;</text>
+  <text class="asurvey" x="560" y="474">← label/hint (inline or jr:itext ref, ${x} → &lt;output/&gt;)</text>
+  <text class="mono" x="424" y="492">&lt;itemset nodeset="instance('list')/root/item[filter]"&gt;</text>
+  <text class="asurvey" x="815" y="492">← choice_filter · randomize</text>
+  <text class="mono" x="424" y="510">&lt;item&gt; inline (search) · query attr (external)</text>
+  <text class="asurvey" x="760" y="510">← search() · select_one_external</text>
+  <text class="mono" x="424" y="528">&lt;setvalue event="xforms-value-changed"/&gt;</text>
+  <text class="asurvey" x="740" y="528">← trigger column</text>
+  <text class="mono" x="408" y="546">&lt;group ref&gt; &lt;label&gt; …</text>
+  <text class="asurvey" x="590" y="546">← begin group · loop sub-groups</text>
+  <text class="mono" x="408" y="564">&lt;group&gt;&lt;repeat nodeset jr:count&gt; …</text>
+  <text class="asurvey" x="680" y="564">← begin repeat · repeat_count</text>
+  <text class="mono" x="424" y="582">&lt;setvalue event="odk-new-repeat"/&gt;</text>
+  <text class="asurvey" x="700" y="582">← dynamic defaults in repeats</text>
+
+  <text class="agen" x="376" y="614">generated for you: meta/instanceID bind, meta/audit + odk:* params, meta/entity + uuid(),</text>
+  <text class="agen" x="376" y="630">or_other choice + "Specify other.", table-list and loop expansion, repeat_count helper, itemsets.csv</text>
+
+  <!-- arrows -->
+  <path class="arrow-s" d="M260,180 C320,180 320,232 358,232"/>
+  <path class="arrow-c" d="M260,381 C310,381 310,286 358,286"/>
+  <path class="arrow-g" d="M260,520 C320,520 300,162 356,160"/>
+  <path class="arrow-e" d="M260,660 C330,660 320,272 358,269"/>
+</svg>

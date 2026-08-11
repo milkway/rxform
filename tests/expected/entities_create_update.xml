@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:entities="http://www.opendatakit.org/xforms/entities" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>entities_create_update</h:title>
+    <model entities:entities-version="2024.1.0" odk:xforms-version="1.0.0">
+      <instance>
+        <data id="entities_create_update">
+          <tree/>
+          <notes/>
+          <meta>
+            <entity baseVersion="" branchId="" create="1" dataset="trees" id="" trunkVersion="" update="1">
+              <label/>
+            </entity>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="trees" src="jr://file-csv/trees.csv"/>
+      <bind nodeset="/data/tree" type="string"/>
+      <bind entities:saveto="notes" nodeset="/data/notes" type="string"/>
+      <bind calculate=" /data/tree  = ''" nodeset="/data/meta/entity/@create" readonly="true()" type="string"/>
+      <bind calculate=" /data/tree  != ''" nodeset="/data/meta/entity/@update" readonly="true()" type="string"/>
+      <bind calculate="instance('trees')/root/item[name= /data/tree ]/__version" nodeset="/data/meta/entity/@baseVersion" readonly="true()" type="string"/>
+      <bind calculate="instance('trees')/root/item[name= /data/tree ]/__trunkVersion" nodeset="/data/meta/entity/@trunkVersion" readonly="true()" type="string"/>
+      <bind calculate="instance('trees')/root/item[name= /data/tree ]/__branchId" nodeset="/data/meta/entity/@branchId" readonly="true()" type="string"/>
+      <bind calculate=" /data/tree " nodeset="/data/meta/entity/@id" readonly="true()" type="string"/>
+      <bind calculate="concat('t-',  /data/notes )" nodeset="/data/meta/entity/label" readonly="true()" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/tree">
+      <label>Which tree?</label>
+      <itemset nodeset="instance('trees')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/data/notes">
+      <label>Notes?</label>
+    </input>
+  </h:body>
+</h:html>

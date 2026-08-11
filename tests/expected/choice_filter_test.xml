@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>cascading selects</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="cascading_selects1">
+          <state/>
+          <county/>
+          <city/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="states">
+        <root>
+          <item>
+            <name>texas</name>
+            <label>Texas</label>
+          </item>
+          <item>
+            <name>washington</name>
+            <label>Washington</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="counties">
+        <root>
+          <item>
+            <name>king</name>
+            <label>King</label>
+            <cf>washington</cf>
+          </item>
+          <item>
+            <name>pierce</name>
+            <label>Pierce</label>
+            <cf>washington</cf>
+          </item>
+          <item>
+            <name>king</name>
+            <label>King</label>
+            <cf>texas</cf>
+          </item>
+          <item>
+            <name>cameron</name>
+            <label>Cameron</label>
+            <cf>texas</cf>
+          </item>
+        </root>
+      </instance>
+      <instance id="cities">
+        <root>
+          <item>
+            <name>dumont</name>
+            <label>Dumont</label>
+            <cf>king</cf>
+          </item>
+          <item>
+            <name>finney</name>
+            <label>Finney</label>
+            <cf>king</cf>
+          </item>
+          <item>
+            <name>brownsville</name>
+            <label>brownsville</label>
+            <cf>cameron</cf>
+          </item>
+          <item>
+            <name>harlingen</name>
+            <label>harlingen</label>
+            <cf>cameron</cf>
+          </item>
+          <item>
+            <name>seattle</name>
+            <label>Seattle</label>
+            <cf>king</cf>
+          </item>
+          <item>
+            <name>redmond</name>
+            <label>Redmond</label>
+            <cf>king</cf>
+          </item>
+          <item>
+            <name>tacoma</name>
+            <label>Tacoma</label>
+            <cf>pierce</cf>
+          </item>
+          <item>
+            <name>puyallup</name>
+            <label>Puyallup</label>
+            <cf>pierce</cf>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/state" type="string"/>
+      <bind nodeset="/data/county" type="string"/>
+      <bind nodeset="/data/city" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/state">
+      <label>state</label>
+      <itemset nodeset="instance('states')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/data/county">
+      <label>county</label>
+      <itemset nodeset="instance('counties')/root/item[ /data/state =cf]">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/data/city">
+      <label>city</label>
+      <itemset nodeset="instance('cities')/root/item[ /data/county =cf]">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+  </h:body>
+</h:html>

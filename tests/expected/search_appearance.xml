@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>search_appearance</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="search_appearance">
+          <fruit/>
+          <fruit2/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/fruit" type="string"/>
+      <bind nodeset="/data/fruit2" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 appearance="search('fruits_data')" ref="/data/fruit">
+      <label>Fruit?</label>
+      <item>
+        <label>name_label</label>
+        <value>name_key</value>
+      </item>
+    </select1>
+    <select1 appearance="quick search('fruits_data', 'matches', 'category', 'citrus')" ref="/data/fruit2">
+      <label>Fruit2?</label>
+      <item>
+        <label>name_label</label>
+        <value>name_key</value>
+      </item>
+    </select1>
+  </h:body>
+</h:html>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>smsform</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="smsform" odk:delimiter="#" odk:prefix="smspre">
+          <fname odk:tag="+fn"/>
+          <age odk:tag="age"/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/fname" type="string"/>
+      <bind nodeset="/data/age" type="int"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/fname">
+      <label>First name?</label>
+    </input>
+    <input ref="/data/age">
+      <label>Age?</label>
+    </input>
+  </h:body>
+</h:html>

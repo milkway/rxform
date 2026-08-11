@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>ct</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="ct">
+          <messy/>
+          <tabby/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind constraint=". != 'x'" nodeset="/data/messy" type="string"/>
+      <bind nodeset="/data/tabby" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/messy">
+      <label>A label with runs</label>
+    </input>
+    <input ref="/data/tabby">
+      <label>tab	here</label>
+    </input>
+  </h:body>
+</h:html>

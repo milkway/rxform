@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>params_media</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="params_media">
+          <pic/>
+          <voice/>
+          <bg/>
+          <loc/>
+          <rating/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/pic" orx:max-pixels="640" type="binary"/>
+      <bind nodeset="/data/voice" odk:quality="low" type="binary"/>
+      <bind nodeset="/data/bg" type="binary"/>
+      <odk:recordaudio event="odk-instance-load" odk:quality="voice-only" ref="/data/bg"/>
+      <bind nodeset="/data/loc" type="geopoint"/>
+      <bind nodeset="/data/rating" type="int"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <upload mediatype="image/*" ref="/data/pic">
+      <label>Pic</label>
+    </upload>
+    <upload mediatype="audio/*" ref="/data/voice">
+      <label>Voice</label>
+    </upload>
+    <input accuracyThreshold="5" ref="/data/loc" unacceptableAccuracyThreshold="10">
+      <label>Where</label>
+    </input>
+    <range end="5" ref="/data/rating" start="0" step="1">
+      <label>Rate</label>
+    </range>
+  </h:body>
+</h:html>

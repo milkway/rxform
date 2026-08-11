@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>actions_geo</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="actions_geo">
+          <start_loc/>
+          <q1/>
+          <bg_audio/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/start_loc" type="geopoint"/>
+      <odk:setgeopoint event="odk-instance-first-load" ref="/data/start_loc"/>
+      <bind nodeset="/data/q1" type="string"/>
+      <bind nodeset="/data/bg_audio" type="binary"/>
+      <odk:recordaudio event="odk-instance-load" ref="/data/bg_audio"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/q1">
+      <label>Q1</label>
+    </input>
+  </h:body>
+</h:html>

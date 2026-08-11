@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>or_other_multi</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="or_other_multi">
+          <favs/>
+          <favs_other/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="colors">
+        <root>
+          <item>
+            <name>red</name>
+            <label>Red</label>
+          </item>
+          <item>
+            <name>blue</name>
+            <label>Blue</label>
+          </item>
+          <item>
+            <name>other</name>
+            <label>Other</label>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/favs" type="string"/>
+      <bind nodeset="/data/favs_other" relevant="selected(../favs, 'other')" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select ref="/data/favs">
+      <label>Favorites?</label>
+      <itemset nodeset="instance('colors')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select>
+    <input ref="/data/favs_other">
+      <label>Specify other.</label>
+    </input>
+  </h:body>
+</h:html>

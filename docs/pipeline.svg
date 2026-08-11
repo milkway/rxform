@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff; }
+    .box { fill: #f0f6ff; stroke: #3b6ea5; stroke-width: 1.5; rx: 8; }
+    .data { fill: #f2fbf4; stroke: #2f8f4e; stroke-width: 1.5; rx: 8; }
+    .file { fill: #fff8ec; stroke: #b07d2b; stroke-width: 1.5; rx: 8; }
+    .errbox { fill: #fdf1f1; stroke: #b3403a; stroke-width: 1.5; rx: 8; }
+    .title { font-size: 15px; font-weight: 600; fill: #17263a; }
+    .mod { font-size: 13px; font-weight: 600; fill: #17263a; }
+    .small { font-size: 11.5px; fill: #45566e; }
+    .mono { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; fill: #45566e; }
+    .monored { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; fill: #a33a34; }
+    .arrow { stroke: #5b6b80; stroke-width: 1.6; fill: none; marker-end: url(#head); }
+    .arrowred { stroke: #b3403a; stroke-width: 1.6; fill: none; marker-end: url(#headred); stroke-dasharray: 5 4; }
+    .lbl { font-size: 11px; fill: #5b6b80; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0e1420; }
+      .box { fill: #16233a; stroke: #6ea3dd; }
+      .data { fill: #12291b; stroke: #58b877; }
+      .file { fill: #2b2312; stroke: #d3a04c; }
+      .errbox { fill: #2d1716; stroke: #d96b64; }
+      .title { fill: #e8eef7; }
+      .mod { fill: #e8eef7; }
+      .small { fill: #a7b4c6; }
+      .mono { fill: #a7b4c6; }
+      .monored { fill: #e08983; }
+      .arrow { stroke: #8fa1b8; }
+      .arrowred { stroke: #d96b64; }
+      .lbl { fill: #8fa1b8; }
+    }
+  </style>
+  <defs>
+    <marker id="head" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#5b6b80"/>
+    </marker>
+    <marker id="headred" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 z" fill="#b3403a"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1040" height="470"/>
+  <text class="title" x="20" y="34">rxform pipeline — XLSForm spreadsheet → ODK XForm XML</text>
+
+  <!-- input file -->
+  <rect rx="8" class="file" x="20" y="80" width="150" height="104"/>
+  <text class="mod" x="36" y="106">survey.xlsx</text>
+  <text class="small" x="36" y="126">sheets:</text>
+  <text class="mono" x="36" y="143">survey</text>
+  <text class="mono" x="36" y="158">choices</text>
+  <text class="mono" x="36" y="173">settings</text>
+
+  <!-- xls.rs -->
+  <rect rx="8" class="box" x="210" y="80" width="170" height="104"/>
+  <text class="mod" x="226" y="106">xls.rs</text>
+  <text class="small" x="226" y="126">reads the workbook</text>
+  <text class="small" x="226" y="141">(calamine) and normalizes</text>
+  <text class="small" x="226" y="156">cells: dates, integral</text>
+  <text class="small" x="226" y="171">floats, smart quotes</text>
+
+  <!-- parser.rs -->
+  <rect rx="8" class="box" x="420" y="80" width="180" height="104"/>
+  <text class="mod" x="436" y="106">parser.rs</text>
+  <text class="small" x="436" y="126">rows → question tree:</text>
+  <text class="small" x="436" y="141">aliases, languages, groups,</text>
+  <text class="small" x="436" y="156">repeats, loops, table-list,</text>
+  <text class="small" x="436" y="171">or_other, flat, entities</text>
+
+  <!-- model -->
+  <rect rx="8" class="data" x="640" y="80" width="160" height="104"/>
+  <text class="mod" x="656" y="106">model.rs</text>
+  <text class="small" x="656" y="126">Survey tree:</text>
+  <text class="small" x="656" y="141">items (questions,</text>
+  <text class="small" x="656" y="156">sections), choice lists,</text>
+  <text class="small" x="656" y="171">settings, translations</text>
+
+  <!-- xform.rs -->
+  <rect rx="8" class="box" x="840" y="80" width="180" height="104"/>
+  <text class="mod" x="856" y="106">xform.rs</text>
+  <text class="small" x="856" y="126">tree → XML nodes:</text>
+  <text class="small" x="856" y="141">instances, binds + actions,</text>
+  <text class="small" x="856" y="156">itext, body controls,</text>
+  <text class="small" x="856" y="171">${ref} → absolute xpaths</text>
+
+  <!-- arrows main row -->
+  <path class="arrow" d="M170,132 L208,132"/>
+  <path class="arrow" d="M380,132 L418,132"/>
+  <path class="arrow" d="M600,132 L638,132"/>
+  <path class="arrow" d="M800,132 L838,132"/>
+
+  <!-- validate -->
+  <rect rx="8" class="box" x="420" y="240" width="180" height="88"/>
+  <text class="mod" x="436" y="266">parser/validate.rs</text>
+  <text class="small" x="436" y="286">names, ${refs}, lists,</text>
+  <text class="small" x="436" y="301">triggers — every check</text>
+  <text class="small" x="436" y="316">carries sheet/row/column</text>
+  <path class="arrow" d="M510,184 L510,238"/>
+
+  <!-- xmlwriter -->
+  <rect rx="8" class="box" x="840" y="240" width="180" height="88"/>
+  <text class="mod" x="856" y="266">xmlwriter.rs</text>
+  <text class="small" x="856" y="286">pyxform-style printer:</text>
+  <text class="small" x="856" y="301">2-space indent, sorted</text>
+  <text class="small" x="856" y="316">attributes, escaping</text>
+  <path class="arrow" d="M930,184 L930,238"/>
+
+  <!-- output -->
+  <rect rx="8" class="file" x="640" y="380" width="160" height="60"/>
+  <text class="mod" x="656" y="404">form.xml (+ itemsets.csv)</text>
+  <text class="small" x="656" y="422">ODK XForm (Collect,</text>
+  <text class="small" x="656" y="436">Enketo, KoboToolbox)</text>
+  <path class="arrow" d="M838,328 C790,360 750,378 720,378" transform="translate(0,2)"/>
+  <text class="lbl" x="768" y="362">to_document()</text>
+
+  <!-- error path -->
+  <rect rx="8" class="errbox" x="20" y="240" width="360" height="88"/>
+  <text class="mod" x="36" y="266">conversion error (Err)</text>
+  <text class="monored" x="36" y="288">[sheet 'survey', row 3, column 'type']</text>
+  <text class="monored" x="36" y="303">unknown question type 'integr'</text>
+  <text class="monored" x="36" y="318">probable cause: did you mean 'integer'?</text>
+  <path class="arrowred" d="M418,284 L382,284"/>
+</svg>

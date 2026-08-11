@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>audit_params</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="audit_params">
+          <q1/>
+          <meta>
+            <audit/>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/q1" type="string"/>
+      <bind nodeset="/data/meta/audit" odk:location-max-age="120" odk:location-min-interval="60" odk:location-priority="balanced" type="binary"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/q1">
+      <label>Q1</label>
+    </input>
+  </h:body>
+</h:html>

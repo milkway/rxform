@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>group</h:title>
+    <model odk:xforms-version="1.0.0">
+      <itext>
+        <translation lang="English (en)">
+          <text id="/data/family_name:label">
+            <value>What's your family name?</value>
+          </text>
+          <text id="/data/father:label">
+            <value>Father</value>
+          </text>
+          <text id="/data/father/phone_number:label">
+            <value>What's your father's phone number?</value>
+          </text>
+          <text id="/data/father/age:label">
+            <value>How old is your father?</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <data id="group">
+          <family_name/>
+          <father>
+            <phone_number/>
+            <age/>
+          </father>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/family_name" type="string"/>
+      <bind constraint="regex(., '^\d*$')" nodeset="/data/father/phone_number" type="string"/>
+      <bind nodeset="/data/father/age" type="int"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/family_name">
+      <label ref="jr:itext('/data/family_name:label')"/>
+    </input>
+    <group ref="/data/father">
+      <label ref="jr:itext('/data/father:label')"/>
+      <input ref="/data/father/phone_number">
+        <label ref="jr:itext('/data/father/phone_number:label')"/>
+        <hint>Enter numbers only.</hint>
+      </input>
+      <input ref="/data/father/age">
+        <label ref="jr:itext('/data/father/age:label')"/>
+      </input>
+    </group>
+  </h:body>
+</h:html>

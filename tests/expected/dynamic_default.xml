@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>dynamic_default</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="dynamic_default">
+          <static_q>hello</static_q>
+          <seed/>
+          <dyn_q/>
+          <d1>2024-01-15</d1>
+          <rand_q/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/static_q" type="string"/>
+      <bind nodeset="/data/seed" type="int"/>
+      <bind nodeset="/data/dyn_q" type="string"/>
+      <setvalue event="odk-instance-first-load" ref="/data/dyn_q" value="concat('a',  /data/seed )"/>
+      <bind nodeset="/data/d1" type="date"/>
+      <bind nodeset="/data/rand_q" type="string"/>
+      <setvalue event="odk-instance-first-load" ref="/data/rand_q" value="random()"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/static_q">
+      <label>Static</label>
+    </input>
+    <input ref="/data/seed">
+      <label>Seed</label>
+    </input>
+    <input ref="/data/dyn_q">
+      <label>Dynamic</label>
+    </input>
+    <input ref="/data/d1">
+      <label>Date default</label>
+    </input>
+    <input ref="/data/rand_q">
+      <label>Random</label>
+    </input>
+  </h:body>
+</h:html>

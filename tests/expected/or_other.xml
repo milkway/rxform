@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>or_other</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="or_other">
+          <fav_color/>
+          <fav_color_other/>
+          <fav_pastel/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="colors">
+        <root>
+          <item>
+            <name>red</name>
+            <label>red</label>
+            <pastel>no</pastel>
+          </item>
+          <item>
+            <name>green</name>
+            <label>green</label>
+            <pastel>no</pastel>
+          </item>
+          <item>
+            <name>blue</name>
+            <label>blue</label>
+            <pastel>no</pastel>
+          </item>
+          <item>
+            <name>mauve</name>
+            <label>mauve</label>
+            <pastel>yes</pastel>
+          </item>
+          <item>
+            <name>apricot</name>
+            <label>apricot</label>
+            <pastel>yes</pastel>
+          </item>
+          <item>
+            <name>other</name>
+            <label>Other</label>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/fav_color" type="string"/>
+      <bind nodeset="/data/fav_color_other" relevant="selected(../fav_color, 'other')" type="string"/>
+      <bind nodeset="/data/fav_pastel" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/fav_color">
+      <label>What is your favorite color?</label>
+      <itemset nodeset="instance('colors')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/data/fav_color_other">
+      <label>Specify other.</label>
+    </input>
+    <select1 ref="/data/fav_pastel">
+      <label>What is your favorite pastel?</label>
+      <itemset nodeset="instance('colors')/root/item[pastel=yes]">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+  </h:body>
+</h:html>

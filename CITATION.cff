@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "rxform: a Rust implementation of pyxform (XLSForm to ODK XForm converter)"
+type: software
+authors:
+  - family-names: "Leite"
+    given-names: "André"
+    email: "leite@de.ufpe.br"
+repository-code: "https://github.com/milkway/rxform"
+url: "https://github.com/milkway/rxform"
+license: BSD-2-Clause
+keywords:
+  - XLSForm
+  - XForm
+  - ODK
+  - OpenRosa
+  - survey
+  - Rust
+abstract: >-
+  rxform converts XLSForm spreadsheets (.xlsx/.xls/.ods) into ODK XForm XML,
+  as used by ODK Collect, Enketo and KoboToolbox. It is a Rust implementation
+  of pyxform whose output is validated form-by-form against pyxform 4.5.0,
+  with error reporting that points at the sheet, row and column of authoring
+  mistakes together with a probable cause.

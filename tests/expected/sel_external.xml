@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>sel_external</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="sel_external">
+          <state/>
+          <city/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="states">
+        <root>
+          <item>
+            <name>pe</name>
+            <label>PE</label>
+          </item>
+          <item>
+            <name>rs</name>
+            <label>RS</label>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/state" type="string"/>
+      <bind nodeset="/data/city" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/state">
+      <label>State</label>
+      <itemset nodeset="instance('states')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input query="instance('city')/root/item[state= /data/state ]" ref="/data/city">
+      <label>City</label>
+    </input>
+  </h:body>
+</h:html>

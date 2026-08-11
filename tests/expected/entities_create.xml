@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:entities="http://www.opendatakit.org/xforms/entities" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>entities_create</h:title>
+    <model entities:entities-version="2024.1.0" odk:xforms-version="1.0.0">
+      <instance>
+        <data id="entities_create">
+          <tree_species/>
+          <tree_loc/>
+          <meta>
+            <entity create="1" dataset="trees" id="">
+              <label/>
+            </entity>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind entities:saveto="species" nodeset="/data/tree_species" type="string"/>
+      <bind entities:saveto="geometry" nodeset="/data/tree_loc" type="geopoint"/>
+      <bind nodeset="/data/meta/entity/@id" readonly="true()" type="string"/>
+      <setvalue event="odk-instance-first-load" ref="/data/meta/entity/@id" value="uuid()"/>
+      <bind calculate="concat( /data/tree_species , ' tree')" nodeset="/data/meta/entity/label" readonly="true()" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/data/tree_species">
+      <label>Species?</label>
+    </input>
+    <input ref="/data/tree_loc">
+      <label>Location?</label>
+    </input>
+  </h:body>
+</h:html>

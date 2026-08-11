@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>default_in_repeat</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="default_in_repeat">
+          <r1 jr:template="">
+            <inner_dyn/>
+            <inner_static>abc</inner_static>
+          </r1>
+          <r1>
+            <inner_dyn/>
+            <inner_static>abc</inner_static>
+          </r1>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <bind nodeset="/data/r1/inner_dyn" type="string"/>
+      <setvalue event="odk-instance-first-load" ref="/data/r1/inner_dyn" value="concat('x','y')"/>
+      <bind nodeset="/data/r1/inner_static" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <group ref="/data/r1">
+      <label>Repeat</label>
+      <repeat nodeset="/data/r1">
+        <input ref="/data/r1/inner_dyn">
+          <label>Inner</label>
+        </input>
+        <input ref="/data/r1/inner_static">
+          <label>InnerS</label>
+        </input>
+        <setvalue event="odk-new-repeat" ref="/data/r1/inner_dyn" value="concat('x','y')"/>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>

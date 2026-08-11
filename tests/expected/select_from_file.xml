@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>select_from_file</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="select_from_file">
+          <fruit/>
+          <city/>
+          <spot/>
+          <cust/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="fruits" src="jr://file-csv/fruits.csv"/>
+      <instance id="cities" src="jr://file/cities.xml"/>
+      <instance id="spots" src="jr://file/spots.geojson"/>
+      <instance id="custom" src="jr://file-csv/custom.csv"/>
+      <bind nodeset="/data/fruit" type="string"/>
+      <bind nodeset="/data/city" type="string"/>
+      <bind nodeset="/data/spot" type="string"/>
+      <bind nodeset="/data/cust" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/fruit">
+      <label>Fruit?</label>
+      <itemset nodeset="instance('fruits')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select ref="/data/city">
+      <label>City?</label>
+      <itemset nodeset="instance('cities')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select>
+    <select1 ref="/data/spot">
+      <label>Spot?</label>
+      <itemset nodeset="instance('spots')/root/item">
+        <value ref="id"/>
+        <label ref="title"/>
+      </itemset>
+    </select1>
+    <select1 ref="/data/cust">
+      <label>Custom?</label>
+      <itemset nodeset="instance('custom')/root/item">
+        <value ref="key"/>
+        <label ref="desc"/>
+      </itemset>
+    </select1>
+  </h:body>
+</h:html>

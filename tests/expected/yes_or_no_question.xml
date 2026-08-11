@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:jr="http://openrosa.org/javarosa" xmlns:odk="http://www.opendatakit.org/xforms" xmlns:orx="http://openrosa.org/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <h:head>
+    <h:title>yes_or_no_question</h:title>
+    <model odk:xforms-version="1.0.0">
+      <itext>
+        <translation lang="english">
+          <text id="yes_or_no-0">
+            <value>yes</value>
+          </text>
+          <text id="yes_or_no-1">
+            <value>no</value>
+          </text>
+          <text id="/data/good_day:label">
+            <value>have you had a good day today?</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <data id="yes_or_no_question">
+          <good_day/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="yes_or_no">
+        <root>
+          <item>
+            <itextId>yes_or_no-0</itextId>
+            <name>yes</name>
+          </item>
+          <item>
+            <itextId>yes_or_no-1</itextId>
+            <name>no</name>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/good_day" type="string"/>
+      <bind jr:preload="uid" nodeset="/data/meta/instanceID" readonly="true()" type="string"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/good_day">
+      <label ref="jr:itext('/data/good_day:label')"/>
+      <itemset nodeset="instance('yes_or_no')/root/item">
+        <value ref="name"/>
+        <label ref="jr:itext(itextId)"/>
+      </itemset>
+    </select1>
+  </h:body>
+</h:html>
