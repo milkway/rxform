@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia XLSForm — construindo um questionário do zero · rxform</title>
+<meta name="description" content="Documentação completa de construção de questionários XLSForm: todos os tipos de pergunta, lógica, grupos e repetições, múltiplos idiomas, aparências, parâmetros e configurações — com exemplos prontos para converter com rxform.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-(--rule) bg-(--bg)/80 backdrop-blur-sm sticky top-0 z-40">
+  <nav class="mx-auto flex max-w-6xl items-baseline gap-6 px-5 py-3.5">
+    <a href="index.html" class="font-display text-xl font-bold tracking-tight">rxform</a>
+    <span class="font-mono text-xs text-(--accent)">guia</span>
+    <span class="flex-1"></span>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="index.html#install">install</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors hidden sm:inline" href="https://docs.rs/rxform">docs.rs</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="https://github.com/milkway/rxform">github</a>
+  </nav>
+</header>
+
+<div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 lg:grid-cols-[230px_1fr]">
+
+<!-- ============ TOC ============ -->
+<aside class="toc sticky top-20 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto lg:block">
+  <p class="font-mono text-xs uppercase tracking-[0.18em] text-(--accent) mb-2">neste guia</p>
+  <a href="#anatomia">1 · Anatomia de um XLSForm</a>
+  <a href="#primeiro">2 · O primeiro formulário</a>
+  <a href="#tipos">3 · Todos os tipos de pergunta</a>
+  <a class="toc-h3" href="#texto-numeros">Texto e números</a>
+  <a class="toc-h3" href="#datas">Datas e horas</a>
+  <a class="toc-h3" href="#escolhas">Escolhas e listas</a>
+  <a class="toc-h3" href="#cascatas">Seleções em cascata</a>
+  <a class="toc-h3" href="#localizacao">Localização</a>
+  <a class="toc-h3" href="#midia">Mídia e arquivos</a>
+  <a class="toc-h3" href="#fluxo">Notas e confirmações</a>
+  <a class="toc-h3" href="#invisiveis">Campos invisíveis</a>
+  <a class="toc-h3" href="#metadados">Metadados</a>
+  <a href="#logica">4 · Lógica do formulário</a>
+  <a href="#estrutura">5 · Grupos, repetições e loops</a>
+  <a href="#idiomas">6 · Múltiplos idiomas</a>
+  <a href="#aparencias">7 · Aparências</a>
+  <a href="#parametros">8 · Parâmetros</a>
+  <a href="#settings">9 · A aba settings</a>
+  <a href="#externos">10 · Dados externos e entities</a>
+  <a href="#erros">11 · Erros comuns</a>
+  <a href="#converter">12 · Converter e publicar</a>
+</aside>
+
+<!-- ============ CONTENT ============ -->
+<main class="doc min-w-0">
+
+<p class="kicker">guia completo · pt-BR</p>
+<h1 class="font-display mt-3 text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Construindo um questionário<br>do zero, célula por célula.</h1>
+<p class="lead mt-5">
+XLSForm é o padrão que transforma uma planilha comum em um formulário digital completo —
+com lógica de pulo, validação, GPS, fotos e vários idiomas — pronto para rodar em
+ODK&nbsp;Collect, KoboToolbox ou Enketo. Este guia constrói uma <em>pesquisa domiciliar</em>
+passo a passo e documenta <strong>todos</strong> os tipos de pergunta e configurações,
+com exemplos que você pode copiar e converter com <code>rxform</code>.
+</p>
+
+<!-- ==================================================== 1 -->
+<h2 id="anatomia">1 · Anatomia de um XLSForm</h2>
+<p>Um XLSForm é um arquivo <code>.xlsx</code> (ou <code>.xls</code>/<code>.ods</code>) com até três abas principais:</p>
+<ul>
+  <li><strong><code>survey</code></strong> — as perguntas, na ordem em que aparecem. Colunas mínimas: <code>type</code>, <code>name</code> e <code>label</code>.</li>
+  <li><strong><code>choices</code></strong> — as listas de opções das perguntas de múltipla escolha. Colunas mínimas: <code>list_name</code>, <code>name</code> e <code>label</code>.</li>
+  <li><strong><code>settings</code></strong> — título, identificador, versão, idioma padrão e outras configurações do formulário (uma única linha de dados).</li>
+</ul>
+<p>Regras de ouro para a coluna <code>name</code> (vale para perguntas, grupos e opções):</p>
+<div class="callout">
+  <p><strong>Nomes</strong> começam com letra ou <code>_</code>, contêm apenas letras, números, <code>-</code>, <code>_</code> e <code>.</code> — sem espaços nem acentos. Eles viram os nomes das colunas no seu banco de dados, então prefira <code>renda_mensal</code> a <code>Renda Mensal (R$)</code>. O <code>label</code>, por outro lado, é texto livre: acentos, emoji, o que precisar.</p>
+</div>
+
+<!-- ==================================================== 2 -->
+<h2 id="primeiro">2 · O primeiro formulário</h2>
+<p>O menor formulário útil tem três linhas na aba <code>survey</code>:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-green)"></span> survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>text</td><td>entrevistador</td><td>Nome de quem aplica a pesquisa</td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>moradores</td><td>Quantas pessoas moram no domicílio?</td></tr>
+    <tr><td class="rn">4</td><td>select_one sim_nao</td><td>tem_agua</td><td>O domicílio tem água encanada?</td></tr>
+  </table>
+</div>
+<p>A pergunta da linha 4 usa a lista <code>sim_nao</code>, definida na aba <code>choices</code>:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-blue)"></span> choices</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>list_name</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>sim_nao</td><td>sim</td><td>Sim</td></tr>
+    <tr><td class="rn">3</td><td>sim_nao</td><td>nao</td><td>Não</td></tr>
+  </table>
+</div>
+<p>E a aba <code>settings</code> dá identidade ao formulário:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-purple)"></span> settings</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>form_title</th><th>form_id</th><th>version</th></tr>
+    <tr><td class="rn">2</td><td>Pesquisa Domiciliar 2026</td><td>pesq_dom_2026</td><td>2026081101</td></tr>
+  </table>
+</div>
+<p>Converta e pronto:</p>
+<pre><code>$ rxform pesquisa_domiciliar.xlsx
+pesquisa_domiciliar.xml</code></pre>
+
+<!-- ==================================================== 3 -->
+<h2 id="tipos">3 · Todos os tipos de pergunta</h2>
+
+<h3 id="texto-numeros">Texto e números</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>hint</th></tr>
+    <tr><td class="rn">2</td><td>text</td><td>observacoes</td><td>Observações gerais</td><td>Campo livre</td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>idade</td><td>Idade (anos completos)</td><td>Somente números inteiros</td></tr>
+    <tr><td class="rn">4</td><td>decimal</td><td>renda</td><td>Renda mensal (R$)</td><td>Use ponto para centavos</td></tr>
+    <tr><td class="rn">5</td><td>range</td><td>satisfacao</td><td>Satisfação com o transporte</td><td>0 = péssimo · 10 = ótimo</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>text</code> — texto livre. Para caixas maiores, use <code>parameters</code> = <code>rows=5</code>.</li>
+  <li><code>integer</code> / <code>decimal</code> — números com teclado numérico no aparelho.</li>
+  <li><code>range</code> — controle deslizante; limites via <code>parameters</code> = <code>start=0 end=10 step=1</code>. Com <code>appearance</code> = <code>rating</code> vira estrelas.</li>
+</ul>
+
+<h3 id="datas">Datas e horas</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th></tr>
+    <tr><td class="rn">2</td><td>date</td><td>data_visita</td><td>Data da visita</td><td></td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>mes_mudanca</td><td>Quando se mudou?</td><td>month-year</td></tr>
+    <tr><td class="rn">4</td><td>time</td><td>hora_inicio</td><td>Hora de início</td><td></td></tr>
+    <tr><td class="rn">5</td><td>dateTime</td><td>agendamento</td><td>Agendar retorno para</td><td></td></tr>
+  </table>
+</div>
+<p>Aparências úteis para <code>date</code>: <code>month-year</code>, <code>year</code> e <code>no-calendar</code>.</p>
+
+<h3 id="escolhas">Escolhas e listas</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th></tr>
+    <tr><td class="rn">2</td><td>select_one escolaridade</td><td>escolaridade</td><td>Escolaridade do responsável</td><td>minimal</td></tr>
+    <tr><td class="rn">3</td><td>select_multiple servicos</td><td>servicos</td><td>Quais serviços chegam à rua?</td><td></td></tr>
+    <tr><td class="rn">4</td><td>rank prioridades</td><td>prioridades</td><td>Ordene as prioridades do bairro</td><td></td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>select_one LISTA</code> — uma resposta. <code>appearance</code>: <code>minimal</code> (menu suspenso), <code>likert</code>, <code>quick</code> (avança sozinho), <code>columns</code>…</li>
+  <li><code>select_multiple LISTA</code> — várias respostas; gravadas separadas por espaço, por isso os <code>name</code> das opções não podem conter espaço.</li>
+  <li><code>rank LISTA</code> — o respondente ordena as opções.</li>
+  <li><code>select_one LISTA or_other</code> — acrescenta a opção “Other” e uma pergunta automática <em>“Specify other.”</em>.</li>
+</ul>
+<p>Colunas extras na aba <code>choices</code> são permitidas e viram dados da opção — a base dos filtros em cascata:</p>
+
+<h3 id="cascatas">Seleções em cascata (choice_filter)</h3>
+<div class="xls-card">
+  <div class="xls-tab">choices</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>list_name</th><th>name</th><th>label</th><th>uf</th></tr>
+    <tr><td class="rn">2</td><td>ufs</td><td>pe</td><td>Pernambuco</td><td></td></tr>
+    <tr><td class="rn">3</td><td>ufs</td><td>rs</td><td>Rio Grande do Sul</td><td></td></tr>
+    <tr><td class="rn">4</td><td>municipios</td><td>recife</td><td>Recife</td><td>pe</td></tr>
+    <tr><td class="rn">5</td><td>municipios</td><td>olinda</td><td>Olinda</td><td>pe</td></tr>
+    <tr><td class="rn">6</td><td>municipios</td><td>poa</td><td>Porto Alegre</td><td>rs</td></tr>
+  </table>
+</div>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>choice_filter</th></tr>
+    <tr><td class="rn">2</td><td>select_one ufs</td><td>uf</td><td>Estado</td><td></td></tr>
+    <tr><td class="rn">3</td><td>select_one municipios</td><td>municipio</td><td>Município</td><td>uf = ${uf}</td></tr>
+  </table>
+</div>
+<p>No filtro, colunas da lista aparecem pelo nome (<code>uf</code>) e respostas anteriores como <code>${uf}</code>. Para embaralhar opções: <code>parameters</code> = <code>randomize=true</code> (com <code>seed=42</code> para ordem reproduzível).</p>
+
+<h3 id="localizacao">Localização</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>parameters</th></tr>
+    <tr><td class="rn">2</td><td>geopoint</td><td>ponto</td><td>Localização do domicílio</td><td>capture-accuracy=5 warning-accuracy=10</td></tr>
+    <tr><td class="rn">3</td><td>geotrace</td><td>trajeto</td><td>Trajeto até o ponto de ônibus</td><td></td></tr>
+    <tr><td class="rn">4</td><td>geoshape</td><td>terreno</td><td>Contorno do terreno</td><td></td></tr>
+  </table>
+</div>
+<p><code>geopoint</code> captura um ponto (com precisão-alvo em metros via <code>parameters</code>); <code>geotrace</code>, uma linha; <code>geoshape</code>, um polígono fechado.</p>
+
+<h3 id="midia">Mídia e arquivos</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th><th>parameters</th></tr>
+    <tr><td class="rn">2</td><td>image</td><td>foto_fachada</td><td>Foto da fachada</td><td></td><td>max-pixels=1024</td></tr>
+    <tr><td class="rn">3</td><td>image</td><td>assinatura</td><td>Assinatura do respondente</td><td>signature</td><td></td></tr>
+    <tr><td class="rn">4</td><td>audio</td><td>relato</td><td>Grave o relato</td><td></td><td>quality=voice-only</td></tr>
+    <tr><td class="rn">5</td><td>video</td><td>video_via</td><td>Vídeo da via</td><td></td><td></td></tr>
+    <tr><td class="rn">6</td><td>file</td><td>comprovante</td><td>Anexe o comprovante (PDF)</td><td></td><td></td></tr>
+    <tr><td class="rn">7</td><td>barcode</td><td>codigo</td><td>Código de barras do hidrômetro</td><td></td><td></td></tr>
+  </table>
+</div>
+<p><code>image</code> com <code>appearance</code> = <code>signature</code> vira campo de assinatura; <code>draw</code>, desenho livre. <code>max-pixels</code> reduz o tamanho das fotos no aparelho.</p>
+
+<h3 id="fluxo">Notas e confirmações</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>note</td><td>abertura</td><td>Bom dia! Esta pesquisa leva ~15 minutos. As respostas são confidenciais.</td></tr>
+    <tr><td class="rn">3</td><td>acknowledge</td><td>consentimento</td><td>O respondente concorda em participar</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>note</code> — texto exibido, sem resposta. Aceita <code>${referências}</code>: <em>“Obrigado, ${entrevistador}!”</em>. É o único tipo que dispensa <code>name</code> (o rxform gera um automaticamente).</li>
+  <li><code>acknowledge</code> — exige um “ok” explícito de quem responde.</li>
+</ul>
+
+<h3 id="invisiveis">Campos invisíveis</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>calculate</td><td>renda_per_capita</td><td>${renda} div ${moradores}</td></tr>
+    <tr><td class="rn">3</td><td>hidden</td><td>versao_amostra</td><td></td></tr>
+  </table>
+</div>
+<p><code>calculate</code> computa um valor com XPath (funções como <code>if()</code>, <code>concat()</code>, <code>selected()</code>, <code>count()</code>, <code>round()</code>…); <code>hidden</code> guarda um valor preenchível por <code>default</code> ou por integrações.</p>
+
+<h3 id="metadados">Metadados — coletados sozinhos</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label / trigger</th></tr>
+    <tr><td class="rn">2</td><td>start</td><td>inicio</td><td></td></tr>
+    <tr><td class="rn">3</td><td>end</td><td>fim</td><td></td></tr>
+    <tr><td class="rn">4</td><td>today</td><td>hoje</td><td></td></tr>
+    <tr><td class="rn">5</td><td>deviceid</td><td>aparelho</td><td></td></tr>
+    <tr><td class="rn">6</td><td>username</td><td>usuario</td><td></td></tr>
+    <tr><td class="rn">7</td><td>audit</td><td>audit</td><td></td></tr>
+    <tr><td class="rn">8</td><td>start-geopoint</td><td>local_inicio</td><td></td></tr>
+    <tr><td class="rn">9</td><td>background-audio</td><td>gravacao</td><td></td></tr>
+    <tr><td class="rn">10</td><td>background-geopoint</td><td>local_resposta</td><td>trigger: ${tem_agua}</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>start</code>/<code>end</code> — carimbo de início/fim do preenchimento; <code>today</code> — a data; <code>deviceid</code>, <code>username</code>, <code>phonenumber</code>, <code>email</code> — identificação do aparelho/conta.</li>
+  <li><code>audit</code> — trilha de auditoria do preenchimento; com <code>parameters</code> = <code>location-priority=balanced location-min-interval=60 location-max-age=120</code> registra também a localização ao longo da entrevista.</li>
+  <li><code>start-geopoint</code> — captura silenciosa da localização ao abrir; <code>background-audio</code> grava o áudio da entrevista; <code>background-geopoint</code> captura a localização quando a pergunta do <code>trigger</code> for respondida.</li>
+</ul>
+
+<!-- ==================================================== 4 -->
+<h2 id="logica">4 · Lógica do formulário</h2>
+<p>Toda a lógica usa <strong><code>${nome}</code></strong> para referenciar respostas anteriores.</p>
+
+<h3>relevant — pular perguntas</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>relevant</th></tr>
+    <tr><td class="rn">2</td><td>select_one sim_nao</td><td>trabalha</td><td>Você trabalha?</td><td></td></tr>
+    <tr><td class="rn">3</td><td>text</td><td>ocupacao</td><td>Qual a sua ocupação?</td><td>${trabalha} = 'sim'</td></tr>
+    <tr><td class="rn">4</td><td>note</td><td>obs_idade</td><td>Módulo aplicável a maiores de idade.</td><td>${idade} &gt;= 18</td></tr>
+  </table>
+</div>
+<p>A pergunta só aparece quando a expressão é verdadeira. Combine condições com <code>and</code>/<code>or</code>; para múltipla escolha use <code>selected(${servicos}, 'agua')</code>.</p>
+
+<h3>constraint — validar respostas</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>constraint</th><th>constraint_message</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>idade</td><td>Idade</td><td>. &gt;= 0 and . &lt;= 120</td><td>Idade deve estar entre 0 e 120.</td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>nascimento</td><td>Data de nascimento</td><td>. &lt;= today()</td><td>A data não pode ser futura.</td></tr>
+  </table>
+</div>
+<p>O ponto <code>.</code> é a própria resposta. A mensagem aparece quando a regra falha.</p>
+
+<h3>required, default, read_only</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>required</th><th>required_message</th><th>default</th></tr>
+    <tr><td class="rn">2</td><td>select_one sim_nao</td><td>tem_agua</td><td>Tem água encanada?</td><td>yes</td><td>Esta resposta é obrigatória.</td><td></td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>data_visita</td><td>Data da visita</td><td></td><td></td><td>today()</td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>setor</td><td>Setor censitário</td><td></td><td></td><td>42</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>required</code> = <code>yes</code> (ou uma expressão) impede avançar sem resposta.</li>
+  <li><code>default</code> aceita valor fixo (<code>42</code>) ou expressão dinâmica (<code>today()</code>, <code>${uf}</code>) avaliada ao abrir o formulário — inclusive <code>${last-saved#setor}</code> para herdar o valor do último envio.</li>
+  <li><code>read_only</code> = <code>yes</code> mostra sem permitir edição.</li>
+</ul>
+
+<h3>trigger — recalcular quando algo muda</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>trigger</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>moradores</td><td>Quantos moradores?</td><td></td><td></td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>criancas</td><td>Quantas crianças?</td><td>${moradores}</td><td></td></tr>
+  </table>
+</div>
+<p>Com <code>trigger</code>, o campo é (re)definido sempre que a pergunta referenciada mudar — aqui, limpando <code>criancas</code> quando <code>moradores</code> é alterado. Se houver <code>calculation</code>, ela roda nesse momento (em vez de continuamente).</p>
+
+<!-- ==================================================== 5 -->
+<h2 id="estrutura">5 · Grupos, repetições e loops</h2>
+
+<h3>Grupos</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th><th>relevant</th></tr>
+    <tr><td class="rn">2</td><td>begin_group</td><td>modulo_agua</td><td>Módulo: Saneamento</td><td>field-list</td><td>${tem_agua} = 'sim'</td></tr>
+    <tr><td class="rn">3</td><td>select_one origem_agua</td><td>origem</td><td>Origem da água</td><td></td><td></td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>dias_falta</td><td>Dias sem água no mês</td><td></td><td></td></tr>
+    <tr><td class="rn">5</td><td>end_group</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>appearance</code> = <code>field-list</code> mostra todas as perguntas do grupo numa tela só.</li>
+  <li><code>table-list</code> — para uma sequência de <code>select_one</code> com a mesma lista, exibe formato de matriz (linhas × colunas).</li>
+  <li>O <code>relevant</code> do grupo vale para tudo dentro dele.</li>
+</ul>
+
+<h3>Repetições</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>repeat_count</th></tr>
+    <tr><td class="rn">2</td><td>begin_repeat</td><td>morador</td><td>Dados do morador</td><td>${moradores}</td></tr>
+    <tr><td class="rn">3</td><td>text</td><td>nome</td><td>Nome</td><td></td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>idade_morador</td><td>Idade</td><td></td></tr>
+    <tr><td class="rn">5</td><td>end_repeat</td><td></td><td></td><td></td></tr>
+  </table>
+</div>
+<p>O bloco se repete uma vez por morador. Sem <code>repeat_count</code>, o entrevistador adiciona repetições manualmente; com uma expressão (ou número fixo), a quantidade é automática. Dentro da repetição, use <code>position(..)</code> para saber o índice atual e <code>indexed-repeat()</code> para ler valores de outra repetição.</p>
+
+<h3>Loops sobre uma lista</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>begin loop over servicos</td><td>aval_servicos</td><td></td></tr>
+    <tr><td class="rn">3</td><td>select_one notas</td><td>nota</td><td>Como avalia o serviço de %(label)s?</td></tr>
+    <tr><td class="rn">4</td><td>end loop</td><td></td><td></td></tr>
+  </table>
+</div>
+<p>Gera um bloco por opção da lista <code>servicos</code>, substituindo <code>%(label)s</code> e <code>%(name)s</code> pelo rótulo/nome de cada opção — uma pergunta “Como avalia o serviço de Água?”, outra “…de Esgoto?”, e assim por diante.</p>
+
+<!-- ==================================================== 6 -->
+<h2 id="idiomas">6 · Múltiplos idiomas</h2>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label::Português (pt)</th><th>label::English (en)</th><th>hint::Português (pt)</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>moradores</td><td>Quantas pessoas moram aqui?</td><td>How many people live here?</td><td>Conte todos os residentes</td></tr>
+  </table>
+</div>
+<p>Basta sufixar as colunas traduzíveis com <code>::Idioma (código)</code>: funciona para <code>label</code>, <code>hint</code>, <code>guidance_hint</code>, <code>constraint_message</code>, <code>required_message</code>, <code>image</code>, <code>audio</code> e <code>video</code> — nas abas <code>survey</code> <em>e</em> <code>choices</code>. Defina o idioma inicial em <code>settings</code> → <code>default_language</code> = <code>Português (pt)</code>. O aplicativo ganha um menu para alternar idiomas.</p>
+<p>Mídia por pergunta: as colunas <code>image</code>/<code>audio</code>/<code>video</code> associam arquivos (ex.: <code>cartao_resposta.jpg</code>) enviados junto com o formulário.</p>
+
+<!-- ==================================================== 7 -->
+<h2 id="aparencias">7 · Aparências (appearance)</h2>
+<div class="xls-card">
+  <div class="xls-tab">referência</div>
+  <table class="xls">
+    <tr><th>appearance</th><th>vale para</th><th>efeito</th></tr>
+    <tr><td>minimal</td><td>select_one/multiple</td><td>menu suspenso compacto</td></tr>
+    <tr><td>quick</td><td>select_one</td><td>avança ao selecionar</td></tr>
+    <tr><td>likert</td><td>select_one</td><td>escala horizontal estilo Likert</td></tr>
+    <tr><td>columns / columns-n</td><td>selects</td><td>opções em colunas</td></tr>
+    <tr><td>autocomplete</td><td>select_one</td><td>busca conforme digita</td></tr>
+    <tr><td>field-list</td><td>grupos</td><td>grupo inteiro numa tela</td></tr>
+    <tr><td>table-list</td><td>grupos</td><td>matriz de selects com a mesma lista</td></tr>
+    <tr><td>multiline</td><td>text</td><td>caixa de várias linhas</td></tr>
+    <tr><td>numbers / thousands-sep</td><td>text</td><td>teclado numérico · separador de milhar</td></tr>
+    <tr><td>month-year · year · no-calendar</td><td>date</td><td>precisão reduzida · sem calendário</td></tr>
+    <tr><td>signature · draw · annotate</td><td>image</td><td>assinatura · desenho · anotar sobre foto</td></tr>
+    <tr><td>map · quick map</td><td>select_one_from_file (geojson)</td><td>escolha no mapa</td></tr>
+    <tr><td>rating</td><td>range</td><td>estrelas</td></tr>
+    <tr><td>label · list-nolabel</td><td>selects</td><td>peças para montar matrizes manuais</td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 8 -->
+<h2 id="parametros">8 · Parâmetros (parameters)</h2>
+<p>A coluna <code>parameters</code> recebe pares <code>chave=valor</code> separados por espaço:</p>
+<div class="xls-card">
+  <div class="xls-tab">referência</div>
+  <table class="xls">
+    <tr><th>tipo</th><th>parâmetros</th></tr>
+    <tr><td>range</td><td><code>start=0 end=10 step=1</code></td></tr>
+    <tr><td>text</td><td><code>rows=5</code></td></tr>
+    <tr><td>image</td><td><code>max-pixels=1024</code></td></tr>
+    <tr><td>audio · background-audio</td><td><code>quality=voice-only | low | normal</code></td></tr>
+    <tr><td>geopoint</td><td><code>capture-accuracy=5 warning-accuracy=10</code></td></tr>
+    <tr><td>selects</td><td><code>randomize=true seed=42</code></td></tr>
+    <tr><td>select_*_from_file</td><td><code>value=coluna label=coluna</code></td></tr>
+    <tr><td>audit</td><td><code>location-priority=balanced location-min-interval=60 location-max-age=120</code></td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 9 -->
+<h2 id="settings">9 · A aba settings</h2>
+<div class="xls-card">
+  <div class="xls-tab">referência</div>
+  <table class="xls">
+    <tr><th>coluna</th><th>para quê</th></tr>
+    <tr><td>form_title</td><td>título exibido no aplicativo</td></tr>
+    <tr><td>form_id</td><td>identificador único do formulário no servidor</td></tr>
+    <tr><td>version</td><td>versão (use data: <code>2026081101</code>); o servidor gerencia atualizações por ela</td></tr>
+    <tr><td>instance_name</td><td>nome de cada envio na listagem — ex.: <code>concat(${municipio}, '-', ${data_visita})</code></td></tr>
+    <tr><td>default_language</td><td>idioma inicial, ex.: <code>Português (pt)</code></td></tr>
+    <tr><td>style</td><td><code>pages</code> (uma tela por grupo) · <code>theme-grid</code></td></tr>
+    <tr><td>public_key</td><td>chave RSA para criptografar envios de ponta a ponta</td></tr>
+    <tr><td>submission_url · auto_send · auto_delete</td><td>destino e política de envio</td></tr>
+    <tr><td>allow_choice_duplicates</td><td>permite <code>name</code> repetido numa lista</td></tr>
+    <tr><td>clean_text_values</td><td><code>no</code> preserva espaços múltiplos nas células (padrão colapsa)</td></tr>
+    <tr><td>name · namespaces · attribute::x · prefix · delimiter · flat · omit_instanceID</td><td>ajustes avançados do XML gerado</td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 10 -->
+<h2 id="externos">10 · Dados externos e entities</h2>
+<h3>Listas grandes em arquivo</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>choice_filter</th></tr>
+    <tr><td class="rn">2</td><td>select_one_from_file municipios.csv</td><td>municipio</td><td>Município</td><td>uf = ${uf}</td></tr>
+    <tr><td class="rn">3</td><td>select_one_from_file setores.geojson</td><td>setor</td><td>Setor (no mapa)</td><td></td></tr>
+  </table>
+</div>
+<p>O CSV precisa de colunas <code>name</code> e <code>label</code> (ou indique outras com <code>parameters</code> = <code>value=codigo label=descricao</code>); GeoJSON usa <code>id</code>/<code>title</code> e habilita <code>appearance</code> = <code>map</code>. O arquivo é enviado ao servidor junto com o formulário.</p>
+<h3>Consultas com pulldata()</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>calculate</td><td>meta_setor</td><td>pulldata('metas', 'meta', 'setor', ${setor})</td></tr>
+  </table>
+</div>
+<p>Busca em <code>metas.csv</code> a coluna <code>meta</code> da linha em que <code>setor</code> = resposta. Há ainda <code>${last-saved#campo}</code> (valor do último envio salvo) e a aba <code>entities</code>, que permite ao formulário <strong>criar e atualizar cadastros</strong> compartilhados entre formulários (ex.: cadastrar domicílios numa visita e reencontrá-los na seguinte) — com <code>save_to</code> nas perguntas e <code>create_if</code>/<code>update_if</code>/<code>label</code> na aba.</p>
+
+<!-- ==================================================== 11 -->
+<h2 id="erros">11 · Erros comuns — e como o rxform avisa</h2>
+<ul>
+  <li><strong>Tipo digitado errado</strong> → <code>[sheet 'survey', row 3, column 'type'] unknown question type 'integr' — did you mean 'integer'?</code></li>
+  <li><strong>Referência quebrada</strong> → <code>'${idadde}' does not match… — did you mean 'idade'?</code></li>
+  <li><strong>Lista inexistente</strong> → aponta a linha e sugere a lista mais parecida.</li>
+  <li><strong>Grupo sem fechar</strong> → aponta a linha do <code>begin_group</code> e pede o <code>end_group</code>.</li>
+  <li><strong>Nomes duplicados entre irmãos</strong>, <strong>nome com espaço/acento</strong>, <strong>pergunta visível sem label</strong>, <strong>opções repetidas na lista</strong> — todos com aba, linha, coluna e causa provável.</li>
+</ul>
+
+<!-- ==================================================== 12 -->
+<h2 id="converter">12 · Converter e publicar</h2>
+<pre><code># converter
+$ rxform pesquisa_domiciliar.xlsx
+pesquisa_domiciliar.xml
+
+# conferir erros de autoria é só rodar — a mensagem aponta a célula
+$ rxform pesquisa_domiciliar.xlsx --stdout &gt; /dev/null</code></pre>
+<ol>
+  <li><strong>KoboToolbox</strong>: você pode subir o próprio <code>.xlsx</code> (o Kobo converte no servidor com pyxform — o rxform gera exatamente o mesmo XML, então serve como validação local instantânea) ou implantar o XML via API.</li>
+  <li><strong>ODK Central</strong>: publique o <code>.xlsx</code> ou o <code>.xml</code> gerado; anexe os CSVs/GeoJSON de listas externas.</li>
+  <li><strong>Enketo</strong>: os formulários publicados ganham link web automaticamente.</li>
+</ol>
+<div class="callout">
+  <p>Fluxo recomendado: mantenha o <code>.xlsx</code> no controle de versão, rode <code>rxform</code> no CI para validar cada mudança (a conversão falha com mensagem precisa se algo quebrar) e publique a partir da versão validada.</p>
+</div>
+
+<p class="mt-12 border-t border-(--rule) pt-6 font-mono text-xs text-(--muted)">
+  guia · rxform — <a href="index.html">voltar ao início</a> · <a href="https://xlsform.org">referência oficial xlsform.org</a>
+</p>
+
+</main>
+</div>
+</body>
+</html>

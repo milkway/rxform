@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @source "../docs/index.html";
+@source "../docs/guia.html";
 
 @theme {
   --font-display: "Fraunces", "Georgia", serif;
@@ -110,4 +111,122 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   [class*="rise-"] { animation: none; }
+}
+
+/* ---------- documentation guide components ---------- */
+@layer components {
+  /* spreadsheet-style example tables */
+  .xls {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .xls th {
+    background: var(--cellhead);
+    color: var(--muted);
+    font-weight: 500;
+    text-align: left;
+  }
+  .xls th, .xls td {
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    vertical-align: top;
+  }
+  .xls .rn { /* row-number gutter cell */
+    width: 2rem;
+    text-align: center;
+    color: var(--muted);
+    background: var(--cellhead);
+    padding: 6px 4px;
+  }
+  .xls-card {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    margin: 1rem 0 1.75rem;
+  }
+  .xls-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--cellhead);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* long-form prose */
+  .doc { color: var(--text); line-height: 1.75; }
+  .doc h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 3.5rem 0 1rem;
+    scroll-margin-top: 5rem;
+  }
+  .doc h3 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 2.25rem 0 0.75rem;
+    scroll-margin-top: 5rem;
+  }
+  .doc p, .doc ul, .doc ol { margin: 0.85rem 0; color: var(--text); }
+  .doc ul { padding-left: 1.4rem; list-style: disc; }
+  .doc ol { padding-left: 1.4rem; list-style: decimal; }
+  .doc li { margin: 0.35rem 0; }
+  .doc a { text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+  .doc a:hover { text-decoration-color: var(--accent); }
+  .doc code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--cellhead);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 0.08em 0.35em;
+  }
+  .doc pre {
+    background: var(--color-term);
+    color: var(--color-termtext);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 1rem 0 1.75rem;
+  }
+  .doc pre code { background: none; border: none; padding: 0; font-size: inherit; }
+  .doc .lead { font-size: 1.1rem; color: var(--muted); }
+  .doc .callout {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    background: var(--surface);
+    padding: 0.85rem 1.1rem;
+    margin: 1.25rem 0;
+  }
+  .doc .kicker {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* table of contents */
+  .toc a {
+    display: block;
+    padding: 0.28rem 0;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc .toc-h3 { padding-left: 1rem; }
 }
