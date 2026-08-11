@@ -1,0 +1,88 @@
+name: release binaries
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to attach assets to (e.g. v0.1.1)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            target: x86_64-unknown-linux-musl
+            deb: true
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+            deb: true
+          - os: macos-14
+            target: aarch64-apple-darwin
+          - os: macos-13
+            target: x86_64-apple-darwin
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install musl tools
+        if: contains(matrix.target, 'musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: Add target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Run tests
+        if: "!contains(matrix.target, 'musl')"
+        run: cargo test --release --locked --target ${{ matrix.target }}
+
+      - name: Package (unix)
+        if: runner.os != 'Windows'
+        run: |
+          ASSET="rxform-${TAG}-${{ matrix.target }}.tar.gz"
+          mkdir -p dist/rxform
+          cp target/${{ matrix.target }}/release/rxform dist/rxform/
+          cp README.md LICENSE dist/rxform/
+          tar -C dist -czf "$ASSET" rxform
+          echo "ASSET=$ASSET" >> "$GITHUB_ENV"
+
+      - name: Package (windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $asset = "rxform-$env:TAG-${{ matrix.target }}.zip"
+          New-Item -ItemType Directory -Force -Path dist/rxform | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/rxform.exe" dist/rxform/
+          Copy-Item README.md, LICENSE dist/rxform/
+          Compress-Archive -Path dist/rxform/* -DestinationPath $asset
+          echo "ASSET=$asset" | Out-File -Append -FilePath $env:GITHUB_ENV
+
+      - name: Build .deb
+        if: matrix.deb
+        run: |
+          cargo install cargo-deb --locked
+          cargo deb --target ${{ matrix.target }} --no-build -o dist/deb/
+          echo "DEB=$(ls dist/deb/*.deb)" >> "$GITHUB_ENV"
+
+      - name: Upload assets to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release upload "$TAG" "$ASSET" --clobber
+          if [ -n "${DEB:-}" ]; then gh release upload "$TAG" "$DEB" --clobber; fi
