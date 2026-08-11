@@ -30,11 +30,11 @@
     }
   </style>
   <defs>
-    <marker id="head" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L9,4 L0,8 z" fill="#5b6b80"/>
+    <marker id="head" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto">
+      <path d="M0,0 L8,2.75 L0,5.5 z" fill="#5b6b80"/>
     </marker>
-    <marker id="headred" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto">
-      <path d="M0,0 L9,4 L0,8 z" fill="#b3403a"/>
+    <marker id="headred" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto">
+      <path d="M0,0 L8,2.75 L0,5.5 z" fill="#b3403a"/>
     </marker>
   </defs>
   <rect class="bg" x="0" y="0" width="1040" height="470"/>
@@ -103,12 +103,12 @@
   <path class="arrow" d="M930,184 L930,238"/>
 
   <!-- output -->
-  <rect rx="8" class="file" x="640" y="380" width="160" height="60"/>
+  <rect rx="8" class="file" x="640" y="380" width="178" height="60"/>
   <text class="mod" x="656" y="404">form.xml (+ itemsets.csv)</text>
   <text class="small" x="656" y="422">ODK XForm (Collect,</text>
   <text class="small" x="656" y="436">Enketo, KoboToolbox)</text>
-  <path class="arrow" d="M838,328 C790,360 750,378 720,378" transform="translate(0,2)"/>
-  <text class="lbl" x="768" y="362">to_document()</text>
+  <path class="arrow" d="M880,330 C880,410 872,410 822,410"/>
+  <text class="lbl" x="888" y="382">to_document()</text>
 
   <!-- error path -->
   <rect rx="8" class="errbox" x="20" y="240" width="360" height="88"/>

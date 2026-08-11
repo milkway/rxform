@@ -40,16 +40,16 @@
     }
   </style>
   <defs>
-    <marker id="hs" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#3b6ea5"/></marker>
-    <marker id="hc" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#2f8f4e"/></marker>
-    <marker id="hg" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#b07d2b"/></marker>
-    <marker id="he" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L9,4 L0,8 z" fill="#8250df"/></marker>
+    <marker id="hs" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto"><path d="M0,0 L8,2.75 L0,5.5 z" fill="#3b6ea5"/></marker>
+    <marker id="hc" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto"><path d="M0,0 L8,2.75 L0,5.5 z" fill="#2f8f4e"/></marker>
+    <marker id="hg" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto"><path d="M0,0 L8,2.75 L0,5.5 z" fill="#b07d2b"/></marker>
+    <marker id="he" markerWidth="8" markerHeight="5.5" refX="7.5" refY="2.75" orient="auto"><path d="M0,0 L8,2.75 L0,5.5 z" fill="#8250df"/></marker>
   </defs>
   <rect class="bg" x="0" y="0" width="1060" height="740"/>
   <text class="title" x="20" y="34">How the XLSForm sheets map into the XForm document</text>
 
   <!-- survey sheet -->
-  <rect rx="8" class="survey" x="20" y="70" width="240" height="236"/>
+  <rect rx="8" class="survey" x="20" y="70" width="252" height="236"/>
   <text class="mod" x="36" y="96">survey sheet</text>
   <text class="monosmall" x="36" y="118">type · name · label::lang</text>
   <text class="monosmall" x="36" y="134">hint · guidance_hint · media</text>
@@ -65,14 +65,14 @@
   <text class="monosmall" x="36" y="294">bind:: · body:: · instance::</text>
 
   <!-- choices sheet -->
-  <rect rx="8" class="choices" x="20" y="326" width="240" height="110"/>
+  <rect rx="8" class="choices" x="20" y="326" width="252" height="110"/>
   <text class="mod" x="36" y="352">choices sheet</text>
   <text class="monosmall" x="36" y="374">list_name · name · label::lang</text>
   <text class="monosmall" x="36" y="390">image/audio/video</text>
   <text class="monosmall" x="36" y="406">extra columns (filters)</text>
 
   <!-- settings sheet -->
-  <rect rx="8" class="settings" x="20" y="456" width="240" height="142"/>
+  <rect rx="8" class="settings" x="20" y="456" width="252" height="142"/>
   <text class="mod" x="36" y="482">settings sheet</text>
   <text class="monosmall" x="36" y="504">form_title · form_id · version</text>
   <text class="monosmall" x="36" y="520">default_language · style · flat</text>
@@ -82,7 +82,7 @@
   <text class="monosmall" x="36" y="584">clean_text_values · omit_instanceID</text>
 
   <!-- entities sheet -->
-  <rect rx="8" class="entities" x="20" y="618" width="240" height="94"/>
+  <rect rx="8" class="entities" x="20" y="618" width="252" height="94"/>
   <text class="mod" x="36" y="644">entities sheet</text>
   <text class="monosmall" x="36" y="666">list_name · entity_id · label</text>
   <text class="monosmall" x="36" y="682">create_if · update_if</text>
@@ -147,8 +147,8 @@
   <text class="agen" x="376" y="630">or_other choice + "Specify other.", table-list and loop expansion, repeat_count helper, itemsets.csv</text>
 
   <!-- arrows -->
-  <path class="arrow-s" d="M260,180 C320,180 320,232 358,232"/>
-  <path class="arrow-c" d="M260,381 C310,381 310,286 358,286"/>
-  <path class="arrow-g" d="M260,520 C320,520 300,162 356,160"/>
-  <path class="arrow-e" d="M260,660 C330,660 320,272 358,269"/>
+  <path class="arrow-s" d="M272,180 C300,180 300,228 330,228 L354,228"/>
+  <path class="arrow-c" d="M272,381 C302,381 298,282 330,282 L354,282"/>
+  <path class="arrow-g" d="M272,520 C315,520 298,156 330,156 L354,156"/>
+  <path class="arrow-e" d="M272,660 C318,660 298,264 330,264 L354,264"/>
 </svg>
