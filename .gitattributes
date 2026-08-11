@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.xlsx binary
+*.png binary
+tests/expected/sel_external_itemsets.csv binary
