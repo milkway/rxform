@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rxform — XLSForm to ODK XForm, in Rust</title>
+<meta name="description" content="rxform converts XLSForm spreadsheets into ODK XForm XML. A Rust implementation of pyxform with output validated form-by-form, and error messages that point at the sheet, row and column.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<meta property="og:title" content="rxform — XLSForm to ODK XForm, in Rust">
+<meta property="og:description" content="Spreadsheets in. XForms out. Validated against pyxform, with errors that point at the exact cell.">
+<link rel="alternate" hreflang="en" href="https://milkway.github.io/rxform/en/index.html">
+<link rel="alternate" hreflang="pt" href="https://milkway.github.io/rxform/pt/index.html">
+<link rel="alternate" hreflang="fr" href="https://milkway.github.io/rxform/fr/index.html">
+<link rel="alternate" hreflang="es" href="https://milkway.github.io/rxform/es/index.html">
+<link rel="alternate" hreflang="x-default" href="https://milkway.github.io/rxform/en/index.html">
+</head>
+<body class="min-h-screen">
+
+<!-- ======================= nav ======================= -->
+<header class="border-b border-(--rule) bg-(--bg)/80 backdrop-blur-sm sticky top-0 z-40">
+  <nav class="mx-auto flex max-w-6xl items-baseline gap-6 px-5 py-3.5">
+    <a href="#" class="font-display text-xl font-bold tracking-tight">rxform</a>
+    <span class="font-mono text-xs text-(--muted) hidden sm:inline">v0.1</span>
+    <span class="flex-1"></span>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="guide.html">guide</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="#install">install</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="#features">features</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="#how">internals</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors hidden sm:inline" href="https://docs.rs/rxform">docs.rs</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="https://crates.io/crates/rxform">crates.io</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="https://github.com/milkway/rxform">github</a>
+    <span class="flex items-baseline gap-2 border-l border-(--rule) pl-4"><a class="font-mono text-xs uppercase text-(--accent) transition-colors" href="../en/index.html">en</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../pt/index.html">pt</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../fr/index.html">fr</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../es/index.html">es</a></span>
+  </nav>
+</header>
+
+<!-- ======================= hero ======================= -->
+<section class="sheet-grid relative overflow-hidden">
+  <!-- worksheet frame decorations -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 hidden w-10 border-r border-(--rule) bg-(--surface)/60 lg:flex flex-col items-center pt-28 gap-[15px] font-mono text-[11px] text-(--muted)/60 select-none">
+    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+  </div>
+
+  <div class="mx-auto max-w-6xl px-5 pt-20 pb-16 lg:pt-28 lg:pb-24">
+    <p class="rise-1 font-mono text-[13px] tracking-[0.18em] uppercase text-(--accent)">A1 &nbsp;·&nbsp; fx&nbsp; =convert(survey)</p>
+    <h1 class="rise-2 font-display mt-4 max-w-3xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
+      Spreadsheets in.<br><span class="text-(--accent)">XForms</span> out.
+    </h1>
+    <p class="rise-3 mt-6 max-w-2xl text-lg leading-relaxed text-(--muted)">
+      <strong class="text-(--text) font-semibold">rxform</strong> converts
+      <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://xlsform.org">XLSForm</a>
+      workbooks into ODK XForm XML — the format ODK&nbsp;Collect, Enketo and KoboToolbox speak.
+      A Rust implementation of pyxform: one fast static binary, output checked
+      form-by-form against the original, and error messages that point at the exact cell.
+    </p>
+
+    <div class="rise-4 mt-9 flex flex-wrap items-center gap-3">
+      <button data-copy="cargo install rxform"
+        class="group flex items-center gap-3 rounded-md border border-(--rule) bg-(--surface) px-4 py-2.5 font-mono text-[15px] shadow-[0_1px_0_var(--rule)] transition-colors hover:border-(--accent) cursor-pointer">
+        <span class="text-(--accent)">$</span> cargo install rxform
+        <span class="copy-label text-xs text-(--muted) group-hover:text-(--accent)">copy</span>
+      </button>
+      <a href="https://github.com/milkway/rxform"
+        class="rounded-md border border-transparent px-4 py-2.5 font-mono text-[15px] text-(--muted) underline decoration-(--rule) underline-offset-4 transition-colors hover:text-(--text) hover:decoration-(--accent)">
+        source ↗
+      </a>
+    </div>
+
+    <!-- transformation vignette -->
+    <div class="rise-5 mt-16 grid items-stretch gap-0 lg:grid-cols-[1fr_56px_1fr]">
+      <!-- the sheet -->
+      <figure class="overflow-hidden rounded-t-lg border border-(--rule) bg-(--surface) lg:rounded-l-lg lg:rounded-tr-none">
+        <figcaption class="flex items-center gap-2 border-b border-(--rule) bg-(--cellhead) px-4 py-2 font-mono text-xs text-(--muted)">
+          <span class="inline-block h-2.5 w-2.5 rounded-sm bg-(--color-green)"></span> survey.xlsx — sheet <b class="text-(--text)">survey</b>
+        </figcaption>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse font-mono text-[13px]">
+            <thead>
+              <tr class="bg-(--cellhead) text-(--muted)">
+                <th class="w-8 border border-(--rule) px-2 py-1.5 font-normal"></th>
+                <th class="border border-(--rule) px-3 py-1.5 text-left font-medium">type</th>
+                <th class="border border-(--rule) px-3 py-1.5 text-left font-medium">name</th>
+                <th class="border border-(--rule) px-3 py-1.5 text-left font-medium">label</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-(--rule) px-2 py-1.5 text-center text-(--muted)">2</td>
+                <td class="border border-(--rule) px-3 py-1.5 text-(--color-blue)">select_one yes_no</td>
+                <td class="border border-(--rule) px-3 py-1.5">good_day</td>
+                <td class="border border-(--rule) px-3 py-1.5">Good day today?</td>
+              </tr>
+              <tr>
+                <td class="border border-(--rule) px-2 py-1.5 text-center text-(--muted)">3</td>
+                <td class="border border-(--rule) px-3 py-1.5 text-(--color-purple)">begin repeat</td>
+                <td class="border border-(--rule) px-3 py-1.5">visit</td>
+                <td class="border border-(--rule) px-3 py-1.5">Each visit</td>
+              </tr>
+              <tr>
+                <td class="border border-(--rule) px-2 py-1.5 text-center text-(--muted)">4</td>
+                <td class="border border-(--rule) px-3 py-1.5 text-(--color-green)">geopoint</td>
+                <td class="border border-(--rule) px-3 py-1.5">spot</td>
+                <td class="border border-(--rule) px-3 py-1.5">Where are you?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </figure>
+
+      <!-- arrow -->
+      <div class="flex items-center justify-center py-2 font-mono text-2xl text-(--accent) lg:rotate-0 rotate-90">⟶</div>
+
+      <!-- the xml -->
+      <figure class="overflow-hidden rounded-b-lg border border-(--rule) bg-(--color-term) lg:rounded-r-lg lg:rounded-bl-none">
+        <figcaption class="flex items-center gap-2 border-b border-white/10 px-4 py-2 font-mono text-xs text-(--color-termtext)/60">
+          <span class="inline-block h-2.5 w-2.5 rounded-sm bg-(--color-blue)"></span> form.xml — ODK XForm
+        </figcaption>
+        <pre class="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-(--color-termtext)"><code>&lt;<span class="text-sky-300">select1</span> <span class="text-amber-200/80">ref</span>=<span class="text-emerald-300">"/data/good_day"</span>&gt;
+  &lt;<span class="text-sky-300">itemset</span> <span class="text-amber-200/80">nodeset</span>=<span class="text-emerald-300">"instance('yes_no')/root/item"</span>&gt;
+    &lt;<span class="text-sky-300">value</span> <span class="text-amber-200/80">ref</span>=<span class="text-emerald-300">"name"</span>/&gt;
+  &lt;/<span class="text-sky-300">itemset</span>&gt;
+&lt;/<span class="text-sky-300">select1</span>&gt;
+&lt;<span class="text-sky-300">repeat</span> <span class="text-amber-200/80">nodeset</span>=<span class="text-emerald-300">"/data/visit"</span>&gt;…&lt;/<span class="text-sky-300">repeat</span>&gt;
+&lt;<span class="text-sky-300">bind</span> <span class="text-amber-200/80">type</span>=<span class="text-emerald-300">"geopoint"</span> <span class="text-amber-200/80">nodeset</span>=<span class="text-emerald-300">"/data/visit/spot"</span>/&gt;<span class="caret-blink text-(--accent)">▌</span></code></pre>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= proof strip ======================= -->
+<section class="rule-y bg-(--surface)">
+  <div class="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-(--rule) lg:grid-cols-4">
+    <div class="px-5 py-6 text-center">
+      <p class="font-display text-3xl font-semibold">34<span class="text-(--muted)">/</span>34</p>
+      <p class="mt-1 font-mono text-xs text-(--muted)">reference forms identical to pyxform 4.5.0</p>
+    </div>
+    <div class="px-5 py-6 text-center">
+      <p class="font-display text-3xl font-semibold">100%</p>
+      <p class="mt-1 font-mono text-xs text-(--muted)">of the xlsform.org specification</p>
+    </div>
+    <div class="px-5 py-6 text-center">
+      <p class="font-display text-3xl font-semibold">65</p>
+      <p class="mt-1 font-mono text-xs text-(--muted)">tests pinning output &amp; diagnostics</p>
+    </div>
+    <div class="px-5 py-6 text-center">
+      <p class="font-display text-3xl font-semibold">1</p>
+      <p class="mt-1 font-mono text-xs text-(--muted)">static binary — no Python required</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= errors ======================= -->
+<section class="mx-auto max-w-6xl px-5 py-20 lg:py-28">
+  <div class="grid items-center gap-10 lg:grid-cols-2">
+    <div class="reveal">
+      <p class="font-mono text-[13px] tracking-[0.18em] uppercase text-(--accent)">B7 · when forms break</p>
+      <h2 class="font-display mt-3 text-4xl font-semibold tracking-tight">Errors that name<br>the cell, not the stack.</h2>
+      <p class="mt-5 max-w-md leading-relaxed text-(--muted)">
+        A typo in row 3 should not read like a crash report. Every rxform error
+        carries the <em>sheet, row and column</em> where it happened — plus a probable
+        cause: the closest question type, the choice list you probably meant,
+        the <code class="font-mono text-[0.9em] text-(--text)">begin</code> row a stray
+        <code class="font-mono text-[0.9em] text-(--text)">end group</code> forgot about.
+      </p>
+      <ul class="mt-6 space-y-2 font-mono text-sm text-(--muted)">
+        <li><span class="text-(--color-green)">✓</span> misspelled types &amp; ${references} → “did you mean …?”</li>
+        <li><span class="text-(--color-green)">✓</span> unclosed groups point at their begin row</li>
+        <li><span class="text-(--color-green)">✓</span> ambiguous names caught at the place of use</li>
+        <li><span class="text-(--color-green)">✓</span> entities, triggers &amp; choice lists cross-checked</li>
+      </ul>
+    </div>
+    <figure class="reveal overflow-hidden rounded-lg border border-(--rule) bg-(--color-term) shadow-[0_18px_50px_-24px_rgba(27,42,65,0.5)]">
+      <figcaption class="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
+        <span class="h-2.5 w-2.5 rounded-full bg-[#f26d5b]"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#f2c14b]"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-[#5fc26a]"></span>
+        <span class="ml-2 font-mono text-xs text-(--color-termtext)/50">terminal</span>
+      </figcaption>
+      <pre class="overflow-x-auto p-5 font-mono text-[13.5px] leading-relaxed text-(--color-termtext)"><code><span class="text-emerald-300">$</span> rxform household_survey.xlsx
+<span class="text-red-400">error:</span> [sheet 'survey', row 12, column 'type'] unknown question type 'selct_one districts'
+  <span class="text-amber-300">probable cause:</span> did you mean 'select_one'?
+
+<span class="text-emerald-300">$</span> rxform household_survey.xlsx
+<span class="text-red-400">error:</span> [sheet 'survey', row 48, column 'relevant'] '${distrct}' does not match
+the name of any question or group
+  <span class="text-amber-300">probable cause:</span> did you mean 'district'?
+
+<span class="text-emerald-300">$</span> rxform household_survey.xlsx
+household_survey.xml<span class="caret-blink text-(--accent)">▌</span></code></pre>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= feature sheet ======================= -->
+<section id="features" class="rule-y sheet-grid">
+  <div class="mx-auto max-w-6xl px-5 py-20 lg:py-24">
+    <p class="reveal font-mono text-[13px] tracking-[0.18em] uppercase text-(--accent)">C2 · sheet “features”</p>
+    <h2 class="reveal font-display mt-3 text-4xl font-semibold tracking-tight">The whole spec. In one sheet.</h2>
+    <p class="reveal mt-4 max-w-2xl leading-relaxed text-(--muted)">
+      Everything on <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://xlsform.org">xlsform.org</a> converts —
+      each row below was verified against pyxform’s own output.
+    </p>
+
+    <figure class="reveal mt-8 overflow-hidden rounded-lg border border-(--rule) bg-(--surface)">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse font-mono text-[13px]">
+          <thead>
+            <tr class="bg-(--cellhead) text-(--muted)">
+              <th class="w-8 border border-(--rule) px-2 py-2 font-normal"></th>
+              <th class="border border-(--rule) px-3 py-2 text-left font-medium">type</th>
+              <th class="border border-(--rule) px-3 py-2 text-left font-medium">name</th>
+              <th class="border border-(--rule) px-3 py-2 text-left font-medium">label</th>
+            </tr>
+          </thead>
+          <tbody class="[&_td]:border [&_td]:border-(--rule) [&_td]:px-3 [&_td]:py-2 [&_tr:hover]:bg-(--cellhead)/50">
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">2</td>
+              <td class="text-(--color-blue) whitespace-nowrap">select_one spec</td>
+              <td>question_types</td>
+              <td class="font-body text-(--muted)">Every type: text → geo traces, ranges, media, barcodes, rank, calculate, audit, metadata preloads</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">3</td>
+              <td class="text-(--color-purple) whitespace-nowrap">begin repeat</td>
+              <td>structure</td>
+              <td class="font-body text-(--muted)">Groups, repeats (+ counts), legacy loops, table-list, flat forms — nested arbitrarily</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">4</td>
+              <td class="text-(--color-green) whitespace-nowrap">select_multiple langs</td>
+              <td>multilanguage</td>
+              <td class="font-body text-(--muted)">label::Idioma (código), translated hints, media &amp; messages via &lt;itext&gt;, guidance hints</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">5</td>
+              <td class="text-(--color-blue) whitespace-nowrap">select_one_from_file</td>
+              <td>external_data</td>
+              <td class="font-body text-(--muted)">CSV/XML/GeoJSON selects, pulldata(), search(), last-saved, select_one_external + itemsets.csv</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">6</td>
+              <td class="text-(--color-purple) whitespace-nowrap">text</td>
+              <td>entities</td>
+              <td class="font-body text-(--muted)">Create &amp; update entity lists: save_to, create_if/update_if, offline version tracking</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">7</td>
+              <td class="text-(--color-green) whitespace-nowrap">calculate</td>
+              <td>logic</td>
+              <td class="font-body text-(--muted)">${refs} → xpaths, cascading choice_filter, dynamic defaults, trigger actions, randomize</td>
+            </tr>
+            <tr>
+              <td class="text-center! px-2! text-(--muted)">8</td>
+              <td class="text-(--color-blue) whitespace-nowrap">note</td>
+              <td>settings</td>
+              <td class="font-body text-(--muted)">Titles, ids, versions, styles, encryption keys, namespaces, custom attributes, SMS compact tags</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= diagrams ======================= -->
+<section id="how" class="mx-auto max-w-6xl px-5 py-20 lg:py-24">
+  <p class="reveal font-mono text-[13px] tracking-[0.18em] uppercase text-(--accent)">D4 · under the hood</p>
+  <h2 class="reveal font-display mt-3 text-4xl font-semibold tracking-tight">A pipeline you can point at.</h2>
+  <p class="reveal mt-4 max-w-2xl leading-relaxed text-(--muted)">
+    Workbook → normalized cells → question tree → validation with locations → XForm XML,
+    printed with pyxform’s conventions so existing tooling sees familiar output.
+  </p>
+  <div class="reveal mt-8 space-y-8">
+    <figure class="overflow-x-auto rounded-lg border border-(--rule) bg-(--surface) p-4">
+      <img src="../pipeline.svg" alt="rxform pipeline: xlsx workbook through parser, validation and generator to XForm XML" class="mx-auto min-w-[720px] max-w-[980px] w-full">
+    </figure>
+    <figure class="overflow-x-auto rounded-lg border border-(--rule) bg-(--surface) p-4">
+      <img src="../mapping.svg" alt="Mapping from XLSForm sheets to the parts of the generated XForm document" class="mx-auto min-w-[720px] max-w-[980px] w-full">
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= quick start ======================= -->
+<section class="rule-y bg-(--surface)">
+  <div class="mx-auto max-w-6xl px-5 py-20 lg:py-24">
+    <p class="reveal font-mono text-[13px] tracking-[0.18em] uppercase text-(--accent)" id="install">E9 · quick start</p>
+    <h2 class="reveal font-display mt-3 text-4xl font-semibold tracking-tight">CLI or crate. Your call.</h2>
+    <p class="reveal mt-4 max-w-2xl leading-relaxed text-(--muted)">
+      Prebuilt binaries for every platform ship with each
+      <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/milkway/rxform/releases/latest">GitHub release</a> —
+      Linux (static musl + <code class="font-mono text-[0.9em]">.deb</code>), macOS and Windows.
+    </p>
+
+    <div class="reveal mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-lg border border-(--rule) bg-(--bg) p-4">
+        <p class="font-mono text-xs uppercase tracking-[0.15em] text-(--muted)">macOS · Homebrew</p>
+        <button data-copy="brew install milkway/tap/rxform" class="group mt-3 w-full text-left font-mono text-[13px] cursor-pointer">
+          <span class="text-(--accent)">$</span> brew install milkway/tap/rxform
+          <span class="copy-label block pt-1 text-xs text-(--muted) group-hover:text-(--accent)">copy</span>
+        </button>
+      </div>
+      <div class="rounded-lg border border-(--rule) bg-(--bg) p-4">
+        <p class="font-mono text-xs uppercase tracking-[0.15em] text-(--muted)">Debian · Ubuntu</p>
+        <p class="mt-3 font-mono text-[13px]"><span class="text-(--accent)">$</span> sudo dpkg -i rxform_*.deb</p>
+        <a class="block pt-1 font-mono text-xs text-(--muted) underline decoration-(--rule) underline-offset-4 hover:text-(--accent)" href="https://github.com/milkway/rxform/releases/latest">get the .deb ↗</a>
+      </div>
+      <div class="rounded-lg border border-(--rule) bg-(--bg) p-4">
+        <p class="font-mono text-xs uppercase tracking-[0.15em] text-(--muted)">Windows · Scoop</p>
+        <button data-copy="scoop bucket add milkway https://github.com/milkway/scoop-bucket; scoop install rxform" class="group mt-3 w-full text-left font-mono text-[13px] cursor-pointer">
+          <span class="text-(--accent)">&gt;</span> scoop install rxform
+          <span class="copy-label block pt-1 text-xs text-(--muted) group-hover:text-(--accent)">copy (adds bucket)</span>
+        </button>
+      </div>
+      <div class="rounded-lg border border-(--rule) bg-(--bg) p-4">
+        <p class="font-mono text-xs uppercase tracking-[0.15em] text-(--muted)">Anywhere · Cargo</p>
+        <button data-copy="cargo install rxform" class="group mt-3 w-full text-left font-mono text-[13px] cursor-pointer">
+          <span class="text-(--accent)">$</span> cargo install rxform
+          <span class="copy-label block pt-1 text-xs text-(--muted) group-hover:text-(--accent)">copy</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="reveal mt-8 grid gap-6 lg:grid-cols-2">
+      <figure class="overflow-hidden rounded-lg border border-(--rule) bg-(--color-term)">
+        <figcaption class="border-b border-white/10 px-4 py-2 font-mono text-xs text-(--color-termtext)/60">command line</figcaption>
+        <pre class="overflow-x-auto p-5 font-mono text-[13.5px] leading-relaxed text-(--color-termtext)"><code><span class="text-slate-500"># install once</span>
+<span class="text-emerald-300">$</span> cargo install rxform
+
+<span class="text-slate-500"># convert — writes survey.xml next to the input</span>
+<span class="text-emerald-300">$</span> rxform survey.xlsx
+
+<span class="text-slate-500"># or choose the destination / print to stdout</span>
+<span class="text-emerald-300">$</span> rxform survey.xlsx -o out/form.xml
+<span class="text-emerald-300">$</span> rxform survey.xlsx --stdout</code></pre>
+      </figure>
+      <figure class="overflow-hidden rounded-lg border border-(--rule) bg-(--color-term)">
+        <figcaption class="border-b border-white/10 px-4 py-2 font-mono text-xs text-(--color-termtext)/60">library — docs.rs/rxform</figcaption>
+        <pre class="overflow-x-auto p-5 font-mono text-[13.5px] leading-relaxed text-(--color-termtext)"><code><span class="text-slate-500">// cargo add rxform</span>
+<span class="text-sky-300">use</span> std::path::Path;
+
+<span class="text-sky-300">let</span> conversion = rxform::<span class="text-amber-200">convert</span>(Path::new(<span class="text-emerald-300">"survey.xlsx"</span>))?;
+std::fs::<span class="text-amber-200">write</span>(<span class="text-emerald-300">"form.xml"</span>, &amp;conversion.xml)?;
+
+<span class="text-sky-300">if let</span> Some(csv) = conversion.itemsets_csv {
+    std::fs::<span class="text-amber-200">write</span>(<span class="text-emerald-300">"itemsets.csv"</span>, csv)?; <span class="text-slate-500">// external selects</span>
+}</code></pre>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= footer ======================= -->
+<footer class="mx-auto max-w-6xl px-5 py-14">
+  <div class="grid gap-8 sm:grid-cols-3">
+    <div>
+      <p class="font-display text-lg font-semibold">rxform</p>
+      <p class="mt-2 text-sm leading-relaxed text-(--muted)">
+        Open source under the <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/milkway/rxform/blob/main/LICENSE">BSD-2-Clause license</a> —
+        the same license as <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/xlsform/pyxform">pyxform</a>,
+        whose behavior it reimplements and whose test forms it reuses.
+      </p>
+    </div>
+    <div class="font-mono text-sm">
+      <p class="text-(--muted) uppercase tracking-[0.15em] text-xs">links</p>
+      <ul class="mt-3 space-y-1.5">
+        <li><a class="hover:text-(--accent)" href="https://github.com/milkway/rxform">github.com/milkway/rxform</a></li>
+        <li><a class="hover:text-(--accent)" href="https://crates.io/crates/rxform">crates.io/crates/rxform</a></li>
+        <li><a class="hover:text-(--accent)" href="https://docs.rs/rxform">docs.rs/rxform</a></li>
+        <li><a class="hover:text-(--accent)" href="guide.html">XLSForm guide</a></li>
+        <li><a class="hover:text-(--accent)" href="https://github.com/milkway/rxform/releases/latest">releases &amp; binaries</a></li>
+        <li><a class="hover:text-(--accent)" href="https://doi.org/10.5281/zenodo.21894015">zenodo DOI</a></li>
+        <li><a class="hover:text-(--accent)" href="https://xlsform.org">xlsform.org</a></li>
+      </ul>
+    </div>
+    <div class="text-sm">
+      <p class="font-mono text-(--muted) uppercase tracking-[0.15em] text-xs">cite</p>
+      <p class="mt-3 leading-relaxed text-(--muted)" id="cite">
+        Leite, A. <em>rxform: a Rust implementation of pyxform.</em>
+        Citation metadata in <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/milkway/rxform/blob/main/CITATION.cff">CITATION.cff</a> ·
+        archived on Zenodo: <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://doi.org/10.5281/zenodo.21894015">doi:10.5281/zenodo.21894015</a>
+      </p>
+    </div>
+  </div>
+  <p class="mt-12 border-t border-(--rule) pt-6 font-mono text-xs text-(--muted)">
+    © 2026 André Leite · built in Recife 🌴 · row 14 of 14 — end of sheet
+  </p>
+</footer>
+
+<script>
+// copy-to-clipboard pills
+for (const btn of document.querySelectorAll("[data-copy]")) {
+  btn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      const label = btn.querySelector(".copy-label");
+      if (label) { label.textContent = "copied!"; setTimeout(() => (label.textContent = "copy"), 1600); }
+    } catch {}
+  });
+}
+// scroll reveals
+const io = new IntersectionObserver(
+  (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("in")),
+  { threshold: 0.12 }
+);
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+</script>
+</body>
+</html>

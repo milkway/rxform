@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
-@source "../docs/index.html";
-@source "../docs/guia.html";
+@source "../docs/en";
+@source "../docs/pt";
+@source "../docs/fr";
+@source "../docs/es";
 
 @theme {
   --font-display: "Fraunces", "Georgia", serif;

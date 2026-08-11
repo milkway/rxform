@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XLSForm guide — building a questionnaire from scratch · rxform</title>
+<meta name="description" content="Complete documentation for authoring XLSForm questionnaires: every question type, logic, groups and repeats, multiple languages, appearances, parameters and settings — with examples ready to convert with rxform.">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="alternate" hreflang="en" href="https://milkway.github.io/rxform/en/guide.html">
+<link rel="alternate" hreflang="pt" href="https://milkway.github.io/rxform/pt/guide.html">
+<link rel="alternate" hreflang="fr" href="https://milkway.github.io/rxform/fr/guide.html">
+<link rel="alternate" hreflang="es" href="https://milkway.github.io/rxform/es/guide.html">
+<link rel="alternate" hreflang="x-default" href="https://milkway.github.io/rxform/en/guide.html">
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-(--rule) bg-(--bg)/80 backdrop-blur-sm sticky top-0 z-40">
+  <nav class="mx-auto flex max-w-6xl items-baseline gap-6 px-5 py-3.5">
+    <a href="index.html" class="font-display text-xl font-bold tracking-tight">rxform</a>
+    <span class="font-mono text-xs text-(--accent)">guide</span>
+    <span class="flex-1"></span>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="index.html#install">install</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors hidden sm:inline" href="https://docs.rs/rxform">docs.rs</a>
+    <a class="font-mono text-sm text-(--muted) hover:text-(--accent) transition-colors" href="https://github.com/milkway/rxform">github</a>
+    <span class="flex items-baseline gap-2 border-l border-(--rule) pl-4"><a class="font-mono text-xs uppercase text-(--accent) transition-colors" href="../en/guide.html">en</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../pt/guide.html">pt</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../fr/guide.html">fr</a><a class="font-mono text-xs uppercase text-(--muted) hover:text-(--accent) transition-colors" href="../es/guide.html">es</a></span>
+  </nav>
+</header>
+
+<div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 lg:grid-cols-[230px_1fr]">
+
+<!-- ============ TOC ============ -->
+<aside class="toc sticky top-20 hidden max-h-[calc(100vh-7rem)] self-start overflow-y-auto lg:block">
+  <p class="font-mono text-xs uppercase tracking-[0.18em] text-(--accent) mb-2">in this guide</p>
+  <a href="#anatomia">1 · Anatomy of an XLSForm</a>
+  <a href="#primeiro">2 · Your first form</a>
+  <a href="#tipos">3 · Every question type</a>
+  <a class="toc-h3" href="#texto-numeros">Text and numbers</a>
+  <a class="toc-h3" href="#datas">Dates and times</a>
+  <a class="toc-h3" href="#escolhas">Choices and lists</a>
+  <a class="toc-h3" href="#cascatas">Cascading selects</a>
+  <a class="toc-h3" href="#localizacao">Location</a>
+  <a class="toc-h3" href="#midia">Media and files</a>
+  <a class="toc-h3" href="#fluxo">Notes and acknowledgements</a>
+  <a class="toc-h3" href="#invisiveis">Invisible fields</a>
+  <a class="toc-h3" href="#metadados">Metadata</a>
+  <a href="#logica">4 · Form logic</a>
+  <a href="#estrutura">5 · Groups, repeats and loops</a>
+  <a href="#idiomas">6 · Multiple languages</a>
+  <a href="#aparencias">7 · Appearances</a>
+  <a href="#parametros">8 · Parameters</a>
+  <a href="#settings">9 · The settings sheet</a>
+  <a href="#externos">10 · External data and entities</a>
+  <a href="#erros">11 · Common errors</a>
+  <a href="#converter">12 · Convert and publish</a>
+</aside>
+
+<!-- ============ CONTENT ============ -->
+<main class="doc min-w-0">
+
+<p class="kicker">complete guide · EN</p>
+<h1 class="font-display mt-3 text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Building a questionnaire<br>from scratch, cell by cell.</h1>
+<p class="lead mt-5">
+XLSForm is the standard that turns an ordinary spreadsheet into a full digital form —
+with skip logic, validation, GPS, photos and multiple languages — ready to run on
+ODK&nbsp;Collect, KoboToolbox or Enketo. This guide builds a <em>household survey</em>
+step by step and documents <strong>every</strong> question type and setting,
+with examples you can copy and convert with <code>rxform</code>.
+</p>
+
+<!-- ==================================================== 1 -->
+<h2 id="anatomia">1 · Anatomy of an XLSForm</h2>
+<p>An XLSForm is an <code>.xlsx</code> file (or <code>.xls</code>/<code>.ods</code>) with up to three main sheets:</p>
+<ul>
+  <li><strong><code>survey</code></strong> — the questions, in the order they appear. Minimum columns: <code>type</code>, <code>name</code> and <code>label</code>.</li>
+  <li><strong><code>choices</code></strong> — the option lists for multiple-choice questions. Minimum columns: <code>list_name</code>, <code>name</code> and <code>label</code>.</li>
+  <li><strong><code>settings</code></strong> — title, identifier, version, default language and other form-wide settings (a single data row).</li>
+</ul>
+<p>Golden rules for the <code>name</code> column (questions, groups and choices alike):</p>
+<div class="callout">
+  <p><strong>Names</strong> start with a letter or <code>_</code> and contain only letters, digits, <code>-</code>, <code>_</code> and <code>.</code> — no spaces or accents. They become the column names in your dataset, so prefer <code>monthly_income</code> over <code>Monthly Income (US$)</code>. The <code>label</code>, on the other hand, is free text: accents, emoji, whatever you need.</p>
+</div>
+
+<!-- ==================================================== 2 -->
+<h2 id="primeiro">2 · Your first form</h2>
+<p>The smallest useful form has three rows on the <code>survey</code> sheet:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-green)"></span> survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>text</td><td>interviewer</td><td>Name of the person applying the survey</td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>household_size</td><td>How many people live in the household?</td></tr>
+    <tr><td class="rn">4</td><td>select_one yes_no</td><td>has_water</td><td>Does the household have piped water?</td></tr>
+  </table>
+</div>
+<p>The question on row 4 uses the <code>yes_no</code> list, defined on the <code>choices</code> sheet:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-blue)"></span> choices</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>list_name</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>yes_no</td><td>yes</td><td>Yes</td></tr>
+    <tr><td class="rn">3</td><td>yes_no</td><td>no</td><td>No</td></tr>
+  </table>
+</div>
+<p>And the <code>settings</code> sheet gives the form its identity:</p>
+<div class="xls-card">
+  <div class="xls-tab"><span class="inline-block h-2 w-2 rounded-sm bg-(--color-purple)"></span> settings</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>form_title</th><th>form_id</th><th>version</th></tr>
+    <tr><td class="rn">2</td><td>Household Survey 2026</td><td>household_2026</td><td>2026081101</td></tr>
+  </table>
+</div>
+<p>Convert and you are done:</p>
+<pre><code>$ rxform household_survey.xlsx
+household_survey.xml</code></pre>
+
+<!-- ==================================================== 3 -->
+<h2 id="tipos">3 · Every question type</h2>
+
+<h3 id="texto-numeros">Text and numbers</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>hint</th></tr>
+    <tr><td class="rn">2</td><td>text</td><td>notes_field</td><td>General notes</td><td>Free text</td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>age</td><td>Age (completed years)</td><td>Whole numbers only</td></tr>
+    <tr><td class="rn">4</td><td>decimal</td><td>income</td><td>Monthly income</td><td>Use a dot for cents</td></tr>
+    <tr><td class="rn">5</td><td>range</td><td>satisfaction</td><td>Satisfaction with transport</td><td>0 = awful · 10 = great</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>text</code> — free text. For taller boxes use <code>parameters</code> = <code>rows=5</code>.</li>
+  <li><code>integer</code> / <code>decimal</code> — numbers, with the numeric keypad on the device.</li>
+  <li><code>range</code> — a slider; bounds via <code>parameters</code> = <code>start=0 end=10 step=1</code>. With <code>appearance</code> = <code>rating</code> it becomes stars.</li>
+</ul>
+
+<h3 id="datas">Dates and times</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th></tr>
+    <tr><td class="rn">2</td><td>date</td><td>visit_date</td><td>Visit date</td><td></td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>moved_in</td><td>When did you move in?</td><td>month-year</td></tr>
+    <tr><td class="rn">4</td><td>time</td><td>start_time</td><td>Start time</td><td></td></tr>
+    <tr><td class="rn">5</td><td>dateTime</td><td>follow_up</td><td>Schedule follow-up for</td><td></td></tr>
+  </table>
+</div>
+<p>Useful appearances for <code>date</code>: <code>month-year</code>, <code>year</code> and <code>no-calendar</code>.</p>
+
+<h3 id="escolhas">Choices and lists</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th></tr>
+    <tr><td class="rn">2</td><td>select_one education</td><td>education</td><td>Education of the household head</td><td>minimal</td></tr>
+    <tr><td class="rn">3</td><td>select_multiple services</td><td>services</td><td>Which services reach the street?</td><td></td></tr>
+    <tr><td class="rn">4</td><td>rank priorities</td><td>priorities</td><td>Rank the neighborhood priorities</td><td></td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>select_one LIST</code> — one answer. <code>appearance</code>: <code>minimal</code> (dropdown), <code>likert</code>, <code>quick</code> (auto-advance), <code>columns</code>…</li>
+  <li><code>select_multiple LIST</code> — several answers; stored space-separated, which is why choice <code>name</code>s cannot contain spaces.</li>
+  <li><code>rank LIST</code> — the respondent orders the options.</li>
+  <li><code>select_one LIST or_other</code> — appends an “Other” option plus an automatic <em>“Specify other.”</em> question.</li>
+</ul>
+<p>Extra columns on the <code>choices</code> sheet are allowed and become choice data — the basis of cascading filters:</p>
+
+<h3 id="cascatas">Cascading selects (choice_filter)</h3>
+<div class="xls-card">
+  <div class="xls-tab">choices</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>list_name</th><th>name</th><th>label</th><th>uf</th></tr>
+    <tr><td class="rn">2</td><td>states</td><td>pe</td><td>Pernambuco</td><td></td></tr>
+    <tr><td class="rn">3</td><td>states</td><td>rs</td><td>Rio Grande do Sul</td><td></td></tr>
+    <tr><td class="rn">4</td><td>cities</td><td>recife</td><td>Recife</td><td>pe</td></tr>
+    <tr><td class="rn">5</td><td>cities</td><td>olinda</td><td>Olinda</td><td>pe</td></tr>
+    <tr><td class="rn">6</td><td>cities</td><td>poa</td><td>Porto Alegre</td><td>rs</td></tr>
+  </table>
+</div>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>choice_filter</th></tr>
+    <tr><td class="rn">2</td><td>select_one states</td><td>state</td><td>State</td><td></td></tr>
+    <tr><td class="rn">3</td><td>select_one cities</td><td>city</td><td>City</td><td>state = ${state}</td></tr>
+  </table>
+</div>
+<p>In the filter, list columns appear by name (<code>state</code>) and earlier answers as <code>${state}</code>. To shuffle options: <code>parameters</code> = <code>randomize=true</code> (add <code>seed=42</code> for a reproducible order).</p>
+
+<h3 id="localizacao">Location</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>parameters</th></tr>
+    <tr><td class="rn">2</td><td>geopoint</td><td>point</td><td>Household location</td><td>capture-accuracy=5 warning-accuracy=10</td></tr>
+    <tr><td class="rn">3</td><td>geotrace</td><td>route</td><td>Route to the bus stop</td><td></td></tr>
+    <tr><td class="rn">4</td><td>geoshape</td><td>plot</td><td>Plot outline</td><td></td></tr>
+  </table>
+</div>
+<p><code>geopoint</code> captures a point (with target accuracy in meters via <code>parameters</code>); <code>geotrace</code>, a line; <code>geoshape</code>, a closed polygon.</p>
+
+<h3 id="midia">Media and files</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th><th>parameters</th></tr>
+    <tr><td class="rn">2</td><td>image</td><td>front_photo</td><td>Photo of the front</td><td></td><td>max-pixels=1024</td></tr>
+    <tr><td class="rn">3</td><td>image</td><td>signature</td><td>Respondent’s signature</td><td>signature</td><td></td></tr>
+    <tr><td class="rn">4</td><td>audio</td><td>testimony</td><td>Record the testimony</td><td></td><td>quality=voice-only</td></tr>
+    <tr><td class="rn">5</td><td>video</td><td>street_video</td><td>Video of the street</td><td></td><td></td></tr>
+    <tr><td class="rn">6</td><td>file</td><td>receipt</td><td>Attach the receipt (PDF)</td><td></td><td></td></tr>
+    <tr><td class="rn">7</td><td>barcode</td><td>meter_code</td><td>Water-meter barcode</td><td></td><td></td></tr>
+  </table>
+</div>
+<p><code>image</code> with <code>appearance</code> = <code>signature</code> becomes a signature pad; <code>draw</code>, free drawing. <code>max-pixels</code> shrinks photos on the device.</p>
+
+<h3 id="fluxo">Notes and acknowledgements</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>note</td><td>intro</td><td>Good morning! This survey takes ~15 minutes. Answers are confidential.</td></tr>
+    <tr><td class="rn">3</td><td>acknowledge</td><td>consent</td><td>The respondent agrees to participate</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>note</code> — displayed text, no answer. Accepts <code>${references}</code>: <em>“Thank you, ${interviewer}!”</em>. It is the only type that can omit <code>name</code> (rxform generates one).</li>
+  <li><code>acknowledge</code> — requires an explicit “ok” from the respondent.</li>
+</ul>
+
+<h3 id="invisiveis">Invisible fields</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>calculate</td><td>income_per_capita</td><td>${income} div ${household_size}</td></tr>
+    <tr><td class="rn">3</td><td>hidden</td><td>sample_version</td><td></td></tr>
+  </table>
+</div>
+<p><code>calculate</code> computes a value with XPath (functions like <code>if()</code>, <code>concat()</code>, <code>selected()</code>, <code>count()</code>, <code>round()</code>…); <code>hidden</code> holds a value fillable via <code>default</code> or integrations.</p>
+
+<h3 id="metadados">Metadata — collected on its own</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label / trigger</th></tr>
+    <tr><td class="rn">2</td><td>start</td><td>started_at</td><td></td></tr>
+    <tr><td class="rn">3</td><td>end</td><td>ended_at</td><td></td></tr>
+    <tr><td class="rn">4</td><td>today</td><td>today_date</td><td></td></tr>
+    <tr><td class="rn">5</td><td>deviceid</td><td>device</td><td></td></tr>
+    <tr><td class="rn">6</td><td>username</td><td>user</td><td></td></tr>
+    <tr><td class="rn">7</td><td>audit</td><td>audit</td><td></td></tr>
+    <tr><td class="rn">8</td><td>start-geopoint</td><td>start_location</td><td></td></tr>
+    <tr><td class="rn">9</td><td>background-audio</td><td>recording</td><td></td></tr>
+    <tr><td class="rn">10</td><td>background-geopoint</td><td>answer_location</td><td>trigger: ${has_water}</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>start</code>/<code>end</code> — timestamps for opening/finishing the form; <code>today</code> — the date; <code>deviceid</code>, <code>username</code>, <code>phonenumber</code>, <code>email</code> — device/account identification.</li>
+  <li><code>audit</code> — an audit trail of the filling session; with <code>parameters</code> = <code>location-priority=balanced location-min-interval=60 location-max-age=120</code> it also logs location during the interview.</li>
+  <li><code>start-geopoint</code> — silently captures location on open; <code>background-audio</code> records the interview audio; <code>background-geopoint</code> captures location when the <code>trigger</code> question is answered.</li>
+</ul>
+
+<!-- ==================================================== 4 -->
+<h2 id="logica">4 · Form logic</h2>
+<p>All logic uses <strong><code>${name}</code></strong> to reference earlier answers.</p>
+
+<h3>relevant — skipping questions</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>relevant</th></tr>
+    <tr><td class="rn">2</td><td>select_one yes_no</td><td>works</td><td>Do you work?</td><td></td></tr>
+    <tr><td class="rn">3</td><td>text</td><td>occupation</td><td>What is your occupation?</td><td>${works} = 'yes'</td></tr>
+    <tr><td class="rn">4</td><td>note</td><td>adult_note</td><td>Module applicable to adults.</td><td>${age} &gt;= 18</td></tr>
+  </table>
+</div>
+<p>The question only appears when the expression is true. Combine conditions with <code>and</code>/<code>or</code>; for multi-selects use <code>selected(${services}, 'water')</code>.</p>
+
+<h3>constraint — validating answers</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>constraint</th><th>constraint_message</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>age</td><td>Age</td><td>. &gt;= 0 and . &lt;= 120</td><td>Age must be between 0 and 120.</td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>birth_date</td><td>Date of birth</td><td>. &lt;= today()</td><td>The date cannot be in the future.</td></tr>
+  </table>
+</div>
+<p>The dot <code>.</code> is the answer itself. The message shows when the rule fails.</p>
+
+<h3>required, default, read_only</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>required</th><th>required_message</th><th>default</th></tr>
+    <tr><td class="rn">2</td><td>select_one yes_no</td><td>has_water</td><td>Piped water?</td><td>yes</td><td>This answer is required.</td><td></td></tr>
+    <tr><td class="rn">3</td><td>date</td><td>visit_date</td><td>Visit date</td><td></td><td></td><td>today()</td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>tract</td><td>Census tract</td><td></td><td></td><td>42</td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>required</code> = <code>yes</code> (or an expression) blocks advancing without an answer.</li>
+  <li><code>default</code> takes a fixed value (<code>42</code>) or a dynamic expression (<code>today()</code>, <code>${state}</code>) evaluated when the form opens — including <code>${last-saved#tract}</code> to inherit the last submission’s value.</li>
+  <li><code>read_only</code> = <code>yes</code> shows the field without allowing edits.</li>
+</ul>
+
+<h3>trigger — recalculating on change</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>trigger</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>household_size</td><td>How many residents?</td><td></td><td></td></tr>
+    <tr><td class="rn">3</td><td>integer</td><td>children</td><td>How many children?</td><td>${household_size}</td><td></td></tr>
+  </table>
+</div>
+<p>With <code>trigger</code>, the field is (re)set whenever the referenced question changes — here, clearing <code>children</code> when <code>household_size</code> is edited. If a <code>calculation</code> is present, it runs at that moment (instead of continuously).</p>
+
+<!-- ==================================================== 5 -->
+<h2 id="estrutura">5 · Groups, repeats and loops</h2>
+
+<h3>Groups</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>appearance</th><th>relevant</th></tr>
+    <tr><td class="rn">2</td><td>begin_group</td><td>water_module</td><td>Module: Sanitation</td><td>field-list</td><td>${has_water} = 'yes'</td></tr>
+    <tr><td class="rn">3</td><td>select_one water_source</td><td>source</td><td>Water source</td><td></td><td></td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>days_without</td><td>Days without water this month</td><td></td><td></td></tr>
+    <tr><td class="rn">5</td><td>end_group</td><td></td><td></td><td></td><td></td></tr>
+  </table>
+</div>
+<ul>
+  <li><code>appearance</code> = <code>field-list</code> shows the whole group on one screen.</li>
+  <li><code>table-list</code> — for a run of <code>select_one</code>s sharing a list, renders a matrix (rows × columns).</li>
+  <li>A group’s <code>relevant</code> applies to everything inside it.</li>
+</ul>
+
+<h3>Repeats</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>repeat_count</th></tr>
+    <tr><td class="rn">2</td><td>begin_repeat</td><td>resident</td><td>Resident details</td><td>${household_size}</td></tr>
+    <tr><td class="rn">3</td><td>text</td><td>name</td><td>Name</td><td></td></tr>
+    <tr><td class="rn">4</td><td>integer</td><td>resident_age</td><td>Age</td><td></td></tr>
+    <tr><td class="rn">5</td><td>end_repeat</td><td></td><td></td><td></td></tr>
+  </table>
+</div>
+<p>The block repeats once per resident. Without <code>repeat_count</code> the interviewer adds repetitions manually; with an expression (or fixed number) the count is automatic. Inside a repeat, use <code>position(..)</code> for the current index and <code>indexed-repeat()</code> to read values from another repetition.</p>
+
+<h3>Loops over a list</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th></tr>
+    <tr><td class="rn">2</td><td>begin loop over services</td><td>service_ratings</td><td></td></tr>
+    <tr><td class="rn">3</td><td>select_one grades</td><td>grade</td><td>How do you rate the %(label)s service?</td></tr>
+    <tr><td class="rn">4</td><td>end loop</td><td></td><td></td></tr>
+  </table>
+</div>
+<p>Generates one block per option of the <code>services</code> list, substituting <code>%(label)s</code> and <code>%(name)s</code> with each option’s label/name — one question “How do you rate the Water service?”, another “…the Sewage service?”, and so on.</p>
+
+<!-- ==================================================== 6 -->
+<h2 id="idiomas">6 · Multiple languages</h2>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label::Português (pt)</th><th>label::English (en)</th><th>hint::Português (pt)</th></tr>
+    <tr><td class="rn">2</td><td>integer</td><td>moradores</td><td>Quantas pessoas moram aqui?</td><td>How many people live here?</td><td>Count every resident</td></tr>
+  </table>
+</div>
+<p>Just suffix the translatable columns with <code>::Language (code)</code>: it works for <code>label</code>, <code>hint</code>, <code>guidance_hint</code>, <code>constraint_message</code>, <code>required_message</code>, <code>image</code>, <code>audio</code> and <code>video</code> — on both the <code>survey</code> <em>and</em> <code>choices</code> sheets. Set the starting language in <code>settings</code> → <code>default_language</code> = <code>English (en)</code>. The app gains a language menu.</p>
+<p>Per-question media: the <code>image</code>/<code>audio</code>/<code>video</code> columns attach files (e.g. <code>answer_card.jpg</code>) shipped with the form.</p>
+
+<!-- ==================================================== 7 -->
+<h2 id="aparencias">7 · Appearances (appearance)</h2>
+<div class="xls-card">
+  <div class="xls-tab">reference</div>
+  <table class="xls">
+    <tr><th>appearance</th><th>applies to</th><th>effect</th></tr>
+    <tr><td>minimal</td><td>select_one/multiple</td><td>compact dropdown</td></tr>
+    <tr><td>quick</td><td>select_one</td><td>advances on selection</td></tr>
+    <tr><td>likert</td><td>select_one</td><td>horizontal Likert-style scale</td></tr>
+    <tr><td>columns / columns-n</td><td>selects</td><td>options in columns</td></tr>
+    <tr><td>autocomplete</td><td>select_one</td><td>search as you type</td></tr>
+    <tr><td>field-list</td><td>groups</td><td>whole group on one screen</td></tr>
+    <tr><td>table-list</td><td>groups</td><td>matrix of selects sharing a list</td></tr>
+    <tr><td>multiline</td><td>text</td><td>multi-line box</td></tr>
+    <tr><td>numbers / thousands-sep</td><td>text</td><td>numeric keypad · thousands separator</td></tr>
+    <tr><td>month-year · year · no-calendar</td><td>date</td><td>reduced precision · no calendar</td></tr>
+    <tr><td>signature · draw · annotate</td><td>image</td><td>signature · drawing · annotate a photo</td></tr>
+    <tr><td>map · quick map</td><td>select_one_from_file (geojson)</td><td>pick on a map</td></tr>
+    <tr><td>rating</td><td>range</td><td>stars</td></tr>
+    <tr><td>label · list-nolabel</td><td>selects</td><td>building blocks for manual matrices</td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 8 -->
+<h2 id="parametros">8 · Parameters (parameters)</h2>
+<p>The <code>parameters</code> column takes space-separated <code>key=value</code> pairs:</p>
+<div class="xls-card">
+  <div class="xls-tab">reference</div>
+  <table class="xls">
+    <tr><th>type</th><th>parameters</th></tr>
+    <tr><td>range</td><td><code>start=0 end=10 step=1</code></td></tr>
+    <tr><td>text</td><td><code>rows=5</code></td></tr>
+    <tr><td>image</td><td><code>max-pixels=1024</code></td></tr>
+    <tr><td>audio · background-audio</td><td><code>quality=voice-only | low | normal</code></td></tr>
+    <tr><td>geopoint</td><td><code>capture-accuracy=5 warning-accuracy=10</code></td></tr>
+    <tr><td>selects</td><td><code>randomize=true seed=42</code></td></tr>
+    <tr><td>select_*_from_file</td><td><code>value=coluna label=coluna</code></td></tr>
+    <tr><td>audit</td><td><code>location-priority=balanced location-min-interval=60 location-max-age=120</code></td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 9 -->
+<h2 id="settings">9 · The settings sheet</h2>
+<div class="xls-card">
+  <div class="xls-tab">reference</div>
+  <table class="xls">
+    <tr><th>column</th><th>what for</th></tr>
+    <tr><td>form_title</td><td>title shown in the app</td></tr>
+    <tr><td>form_id</td><td>unique form identifier on the server</td></tr>
+    <tr><td>version</td><td>version (use a date: <code>2026081101</code>); the server manages updates by it</td></tr>
+    <tr><td>instance_name</td><td>name of each submission in listings — e.g. <code>concat(${city}, '-', ${visit_date})</code></td></tr>
+    <tr><td>default_language</td><td>starting language, e.g. <code>English (en)</code></td></tr>
+    <tr><td>style</td><td><code>pages</code> (one screen per group) · <code>theme-grid</code></td></tr>
+    <tr><td>public_key</td><td>RSA key for end-to-end encrypted submissions</td></tr>
+    <tr><td>submission_url · auto_send · auto_delete</td><td>submission destination and policy</td></tr>
+    <tr><td>allow_choice_duplicates</td><td>allows repeated <code>name</code>s in a list</td></tr>
+    <tr><td>clean_text_values</td><td><code>no</code> preserves runs of spaces in cells (collapsed by default)</td></tr>
+    <tr><td>name · namespaces · attribute::x · prefix · delimiter · flat · omit_instanceID</td><td>advanced tweaks to the generated XML</td></tr>
+  </table>
+</div>
+
+<!-- ==================================================== 10 -->
+<h2 id="externos">10 · External data and entities</h2>
+<h3>Big lists in files</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>label</th><th>choice_filter</th></tr>
+    <tr><td class="rn">2</td><td>select_one_from_file cities.csv</td><td>city</td><td>City</td><td>state = ${state}</td></tr>
+    <tr><td class="rn">3</td><td>select_one_from_file tracts.geojson</td><td>tract</td><td>Tract (on the map)</td><td></td></tr>
+  </table>
+</div>
+<p>The CSV needs <code>name</code> and <code>label</code> columns (or point at others with <code>parameters</code> = <code>value=code label=description</code>); GeoJSON uses <code>id</code>/<code>title</code> and enables <code>appearance</code> = <code>map</code>. The file is uploaded to the server with the form.</p>
+<h3>Lookups with pulldata()</h3>
+<div class="xls-card">
+  <div class="xls-tab">survey</div>
+  <table class="xls">
+    <tr><th class="rn"></th><th>type</th><th>name</th><th>calculation</th></tr>
+    <tr><td class="rn">2</td><td>calculate</td><td>tract_target</td><td>pulldata('targets', 'target', 'tract', ${tract})</td></tr>
+  </table>
+</div>
+<p>Looks up the <code>target</code> column in <code>targets.csv</code> for the row where <code>tract</code> = the answer. There is also <code>${last-saved#field}</code> (the last saved submission’s value) and the <code>entities</code> sheet, which lets a form <strong>create and update registries</strong> shared across forms (e.g. register households on one visit and find them again on the next) — with <code>save_to</code> on questions and <code>create_if</code>/<code>update_if</code>/<code>label</code> on the sheet.</p>
+
+<!-- ==================================================== 11 -->
+<h2 id="erros">11 · Common errors — and how rxform warns you</h2>
+<ul>
+  <li><strong>Misspelled type</strong> → <code>[sheet 'survey', row 3, column 'type'] unknown question type 'integr' — did you mean 'integer'?</code></li>
+  <li><strong>Broken reference</strong> → <code>'${agge}' does not match… — did you mean 'age'?</code></li>
+  <li><strong>Missing choice list</strong> → points at the row and suggests the closest list.</li>
+  <li><strong>Unclosed group</strong> → points at the <code>begin_group</code> row and asks for the <code>end_group</code>.</li>
+  <li><strong>Duplicate sibling names</strong>, <strong>names with spaces/accents</strong>, <strong>visible questions without a label</strong>, <strong>repeated options in a list</strong> — all with sheet, row, column and probable cause.</li>
+</ul>
+
+<!-- ==================================================== 12 -->
+<h2 id="converter">12 · Convert and publish</h2>
+<pre><code># converter
+$ rxform household_survey.xlsx
+household_survey.xml
+
+# conferir erros de autoria é só rodar — a mensagem aponta a célula
+$ rxform pesquisa_domiciliar.xlsx --stdout &gt; /dev/null</code></pre>
+<ol>
+  <li><strong>KoboToolbox</strong>: upload the <code>.xlsx</code> itself (Kobo converts server-side with pyxform — rxform produces exactly the same XML, so it doubles as instant local validation) or deploy the XML via API.</li>
+  <li><strong>ODK Central</strong>: publish the <code>.xlsx</code> or the generated <code>.xml</code>; attach external-list CSVs/GeoJSON.</li>
+  <li><strong>Enketo</strong>: published forms automatically get a web link.</li>
+</ol>
+<div class="callout">
+  <p>Recommended flow: keep the <code>.xlsx</code> under version control, run <code>rxform</code> in CI to validate every change (conversion fails with a precise message when something breaks), and publish from the validated version.</p>
+</div>
+
+<p class="mt-12 border-t border-(--rule) pt-6 font-mono text-xs text-(--muted)">
+  guide · rxform — <a href="index.html">back to home</a> · <a href="https://xlsform.org">official xlsform.org reference</a>
+</p>
+
+</main>
+</div>
+</body>
+</html>
