@@ -176,7 +176,21 @@ Checks include, among others:
 
 ## Installation
 
+Prebuilt binaries for Linux (static musl + `.deb`), macOS and Windows are
+attached to every [GitHub release](https://github.com/milkway/rxform/releases/latest).
+
 ```sh
+# macOS (Homebrew)
+brew install milkway/tap/rxform
+
+# Debian/Ubuntu — grab the .deb for your arch from the latest release
+sudo dpkg -i rxform_*.deb
+
+# Windows (Scoop)
+scoop bucket add milkway https://github.com/milkway/scoop-bucket
+scoop install rxform
+
+# anywhere with a Rust toolchain
 cargo install rxform        # CLI
 cargo add rxform            # library
 ```
