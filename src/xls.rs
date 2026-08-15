@@ -26,10 +26,33 @@ pub struct Workbook {
 }
 
 pub fn read_workbook(path: &Path) -> Result<Workbook> {
-    let mut wb = open_workbook_auto(path).map_err(|e| {
+    let wb = open_workbook_auto(path).map_err(|e| {
         Error::new(format!("cannot open workbook: {e}"))
             .hint("supported formats are .xlsx, .xls and .ods")
     })?;
+    sheets_of(wb)
+}
+
+/// The same, from bytes already in hand.
+///
+/// A server receiving an upload has the workbook in memory and no reason to
+/// put it on disk first: a temporary file inside a request path is one more
+/// thing that fails when the disk is full, needs a unique name under
+/// concurrency, and is left behind if the process dies mid-request.
+/// `calamine` can sniff the format from a reader just as well as from a
+/// path, so nothing is given up for it.
+pub fn read_workbook_from_bytes(bytes: &[u8]) -> Result<Workbook> {
+    let wb = calamine::open_workbook_auto_from_rs(std::io::Cursor::new(bytes)).map_err(|e| {
+        Error::new(format!("cannot open workbook: {e}"))
+            .hint("supported formats are .xlsx, .xls and .ods")
+    })?;
+    sheets_of(wb)
+}
+
+/// Everything after opening, which is the same whichever door was used.
+fn sheets_of<RS: std::io::Read + std::io::Seek>(
+    mut wb: calamine::Sheets<RS>,
+) -> Result<Workbook> {
     let sheet_names = wb.sheet_names().to_vec();
 
     let find = |target: &str| -> Option<String> {
@@ -69,8 +92,8 @@ pub fn read_workbook(path: &Path) -> Result<Workbook> {
     })
 }
 
-fn read_sheet(
-    wb: &mut calamine::Sheets<std::io::BufReader<std::fs::File>>,
+fn read_sheet<RS: std::io::Read + std::io::Seek>(
+    wb: &mut calamine::Sheets<RS>,
     name: &str,
 ) -> Result<Sheet> {
     let range: Range<Data> = wb
@@ -154,5 +177,54 @@ fn cell_to_string(cell: &Data) -> String {
         Data::DateTimeIso(s) => s.clone(),
         Data::DurationIso(s) => s.clone(),
         Data::Error(e) => format!("{e:?}"),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The two doors open the same workbook.
+    ///
+    /// The path version is the one every fixture test already exercises, so
+    /// what needs proving is that reading the same bytes from memory lands
+    /// in the same place — not that either one works. A server publishing a
+    /// form takes the second door and must get what the first one gives.
+    #[test]
+    fn bytes_and_path_read_the_same_workbook() {
+        let path = Path::new("tests/fixtures/flat_xlsform_test.xlsx");
+        let from_path = read_workbook(path).expect("the fixture opens by path");
+        let bytes = std::fs::read(path).expect("the fixture reads");
+        let from_bytes = read_workbook_from_bytes(&bytes).expect("the fixture opens from memory");
+
+        // Sheet by sheet rather than one assert, so a failure says which.
+        for (name, a, b) in [
+            ("survey", &from_path.survey, &from_bytes.survey),
+            ("choices", &from_path.choices, &from_bytes.choices),
+            ("settings", &from_path.settings, &from_bytes.settings),
+            (
+                "external_choices",
+                &from_path.external_choices,
+                &from_bytes.external_choices,
+            ),
+            ("entities", &from_path.entities, &from_bytes.entities),
+        ] {
+            assert_eq!(a.headers, b.headers, "'{name}' headers differ");
+            assert_eq!(a.rows, b.rows, "'{name}' rows differ");
+        }
+        assert!(
+            !from_bytes.survey.rows.is_empty(),
+            "the fixture has a survey sheet, so an empty one means both doors are equally broken"
+        );
+    }
+
+    /// Bytes that are not a workbook are refused with the same hint as a
+    /// file that is not one, rather than panicking inside calamine.
+    #[test]
+    fn bytes_that_are_not_a_workbook_are_refused() {
+        let refused = read_workbook_from_bytes(b"this is not a spreadsheet")
+            .expect_err("nonsense is not a workbook");
+        let said = format!("{refused}");
+        assert!(said.contains("cannot open workbook"), "{said}");
     }
 }
