@@ -50,9 +50,7 @@ pub fn read_workbook_from_bytes(bytes: &[u8]) -> Result<Workbook> {
 }
 
 /// Everything after opening, which is the same whichever door was used.
-fn sheets_of<RS: std::io::Read + std::io::Seek>(
-    mut wb: calamine::Sheets<RS>,
-) -> Result<Workbook> {
+fn sheets_of<RS: std::io::Read + std::io::Seek>(mut wb: calamine::Sheets<RS>) -> Result<Workbook> {
     let sheet_names = wb.sheet_names().to_vec();
 
     let find = |target: &str| -> Option<String> {
