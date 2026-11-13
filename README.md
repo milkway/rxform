@@ -5,10 +5,16 @@
 [![license: BSD-2-Clause](https://img.shields.io/badge/license-BSD--2--Clause-blue.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21894015.svg)](https://doi.org/10.5281/zenodo.21894015)
 
-A Rust implementation of [pyxform](https://github.com/xlsform/pyxform): converts
+A Rust port of [pyxform](https://github.com/XLSForm/pyxform), the reference
+XLSForm converter maintained by the XLSForm community: converts
 [XLSForm](https://xlsform.org) spreadsheets into ODK
 [XForm](https://getodk.github.io/xforms-spec/) XML, as used by ODK Collect,
 Enketo, KoboToolbox and friends. Ships as a CLI and as a library crate.
+
+> An independent project, not affiliated with, maintained by or endorsed by
+> the XLSForm/pyxform maintainers or ODK. The conversion rules are pyxform's;
+> its licence notice is reproduced in [NOTICE](NOTICE).
+> The port was written with the assistance of AI coding tools.
 
 Output is validated against **pyxform 4.5.0**: for every form in
 `tests/fixtures/` — the pyxform example forms plus one form per advanced
@@ -202,7 +208,8 @@ cargo test
 ```
 
 `tests/fixtures/` contains example forms copied from the pyxform test suite
-(BSD 2-Clause, © the pyxform contributors) plus small feature-specific forms.
+(BSD 2-Clause, © 2015 XLSForm) plus small feature-specific forms;
+[`tests/fixtures/README.md`](tests/fixtures/README.md) says which is which.
 `tests/expected/` holds rxform's output for them, validated against pyxform
 4.5.0 by canonical XML comparison; the integration tests pin rxform to those
 snapshots, and `tests/errors_test.rs` locks in the diagnostics (location +

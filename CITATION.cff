@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "rxform: a Rust implementation of pyxform (XLSForm to ODK XForm converter)"
+title: "rxform: a Rust port of pyxform (XLSForm to ODK XForm converter)"
 type: software
 authors:
   - family-names: "Leite"
@@ -24,3 +24,12 @@ abstract: >-
   of pyxform whose output is validated form-by-form against pyxform 4.5.0,
   with error reporting that points at the sheet, row and column of authoring
   mistakes together with a probable cause.
+references:
+  - type: software
+    title: "pyxform"
+    authors:
+      - name: "XLSForm"
+    version: "4.5.0"
+    repository-code: "https://github.com/XLSForm/pyxform"
+    license: BSD-2-Clause
+    notes: "The Python XLSForm converter that rxform is a port of. Please cite it."

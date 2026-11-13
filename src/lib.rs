@@ -1,4 +1,4 @@
-//! rxform — a Rust implementation of [pyxform](https://github.com/xlsform/pyxform):
+//! rxform — a Rust port of [pyxform](https://github.com/XLSForm/pyxform):
 //! converts XLSForm spreadsheets into ODK XForm XML.
 //!
 //! ```no_run
