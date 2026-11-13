@@ -1,6 +1,6 @@
 [package]
 name = "rxform"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 description = "Rust port of pyxform: convert XLSForm spreadsheets to ODK XForm XML"
 license = "BSD-2-Clause"

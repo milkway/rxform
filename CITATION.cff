@@ -20,7 +20,7 @@ keywords:
   - Rust
 abstract: >-
   rxform converts XLSForm spreadsheets (.xlsx/.xls/.ods) into ODK XForm XML,
-  as used by ODK Collect, Enketo and KoboToolbox. It is a Rust implementation
+  as used by ODK Collect, Enketo and KoboToolbox. It is a Rust port
   of pyxform whose output is validated form-by-form against pyxform 4.5.0,
   with error reporting that points at the sheet, row and column of authoring
   mistakes together with a probable cause.
