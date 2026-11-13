@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>rxform — XLSForm para ODK XForm, em Rust</title>
-<meta name="description" content="rxform converte planilhas XLSForm em XML ODK XForm. Uma implementação do pyxform em Rust com saída validada formulário a formulário e erros que apontam aba, linha e coluna.">
+<meta name="description" content="rxform converte planilhas XLSForm em XML ODK XForm. Um porte em Rust do pyxform com saída validada formulário a formulário e erros que apontam aba, linha e coluna.">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <strong class="text-(--text) font-semibold">rxform</strong> converte planilhas
       <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://xlsform.org">XLSForm</a>
       em XML ODK XForm — o formato que ODK&nbsp;Collect, Enketo e KoboToolbox entendem.
-      Uma implementação do pyxform em Rust: um binário estático rápido, saída conferida
+      Um porte em Rust do pyxform: um binário estático rápido, saída conferida
       formulário a formulário contra o original, e mensagens de erro que apontam a célula exata.
     </p>
 
@@ -362,6 +362,10 @@ std::fs::<span class="text-amber-200">write</span>(<span class="text-emerald-300
         a mesma do <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/xlsform/pyxform">pyxform</a>,
         cujo comportamento reimplementa e cujos formulários de teste reutiliza.
       </p>
+      <p class="mt-2 text-sm leading-relaxed text-(--muted)">
+        Projeto independente, sem afiliação, manutenção ou endosso dos
+        mantenedores do XLSForm/pyxform nem do ODK.
+      </p>
     </div>
     <div class="font-mono text-sm">
       <p class="text-(--muted) uppercase tracking-[0.15em] text-xs">links</p>
@@ -378,7 +382,7 @@ std::fs::<span class="text-amber-200">write</span>(<span class="text-emerald-300
     <div class="text-sm">
       <p class="font-mono text-(--muted) uppercase tracking-[0.15em] text-xs">cite</p>
       <p class="mt-3 leading-relaxed text-(--muted)" id="cite">
-        Leite, A. <em>rxform: a Rust implementation of pyxform.</em>
+        Leite, A. <em>rxform: a Rust port of pyxform.</em>
         Metadados de citação em <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://github.com/milkway/rxform/blob/main/CITATION.cff">CITATION.cff</a> ·
         arquivado no Zenodo: <a class="underline decoration-(--rule) underline-offset-4 hover:decoration-(--accent)" href="https://doi.org/10.5281/zenodo.21894015">doi:10.5281/zenodo.21894015</a>
       </p>
