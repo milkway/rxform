@@ -1,12 +1,12 @@
 {
-    "version": "0.1.2",
-    "description": "Convert XLSForm spreadsheets to ODK XForm XML (pyxform in Rust)",
+    "version": "0.1.5",
+    "description": "Convert XLSForm spreadsheets to ODK XForm XML (Rust port of pyxform)",
     "homepage": "https://milkway.github.io/rxform/",
     "license": "BSD-2-Clause",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/milkway/rxform/releases/download/v0.1.2/rxform-v0.1.2-x86_64-pc-windows-msvc.zip",
-            "hash": "f22b3b3517e7c2f5d1de0204a07d6a9e715b1080ebc99befa9c2e2b79e0cf7b1"
+            "url": "https://github.com/milkway/rxform/releases/download/v0.1.5/rxform-v0.1.5-x86_64-pc-windows-msvc.zip",
+            "hash": "c60dfda0236c66dea78f64c3667968e67840373855f51b33b9921efd86391960"
         }
     },
     "bin": "rxform.exe",
